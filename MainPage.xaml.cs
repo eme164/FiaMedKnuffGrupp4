@@ -74,7 +74,7 @@ namespace FiaMedKnuffGrupp4
 
         private void canvas_CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args)
         {
-
+            
         }
 
         private async void setCellSize()
