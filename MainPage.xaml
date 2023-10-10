@@ -8,7 +8,10 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
-
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Image x:Name="DiceImage" Source="Assets/dice_1.png" Height="100" Width="100" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Button x:Name="RollDiceButton" Content="Roll Dice" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,50" Click="RollDiceButton_Click"/>
+        <TextBlock x:Name="PlayerTurnTextBlock" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,50,0,0" Text="Player 1's Turn" FontSize="20"/>
+        <MediaElement x:Name="DiceRollSound" Source="Assets/dice_roll.mp3" AutoPlay="False"/>
     </Grid>
 </Page>
