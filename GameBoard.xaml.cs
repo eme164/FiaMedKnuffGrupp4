@@ -29,7 +29,7 @@ namespace FiaMedKnuffGrupp4
     {
         private readonly Grid grid = new Grid();
         private int numberOfColumnsInGrid = 15;
-        private bool drawGrid = false; //For debugging purposes
+        private bool drawGrid = true; //For debugging purposes
         private float cellSize;
         CanvasDrawingSession drawingSession;
         public GameBoard()
