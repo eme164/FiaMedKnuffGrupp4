@@ -19,6 +19,7 @@
             x:Name="canvas"
             CreateResources="canvas_CreateResources"
             Draw="canvas_Draw"
+            PointerPressed="canvas_PointerPressed"
             Update="canvas_Update" />
     </Grid>
 </Page>
