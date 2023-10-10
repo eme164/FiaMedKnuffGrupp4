@@ -26,5 +26,36 @@ namespace FiaMedKnuffGrupp4
         {
             this.InitializeComponent();
         }
+
+
+        private void Button_Start(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Button_Create(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Button_Load(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Button_Save(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Button_Score(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Button_Quit(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
