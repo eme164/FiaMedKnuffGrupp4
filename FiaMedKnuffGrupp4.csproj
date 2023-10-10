@@ -122,6 +122,9 @@
     <Compile Include="GameBoard.xaml.cs">
       <DependentUpon>GameBoard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DiceAnimation.xaml.cs">
+      <DependentUpon>DiceAnimation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -138,6 +141,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Images\Gameboard\Board.png" />
+    <Content Include="Assets\dice_1.png" />
+    <Content Include="Assets\dice_2.png" />
+    <Content Include="Assets\dice_3.png" />
+    <Content Include="Assets\dice_4.png" />
+    <Content Include="Assets\dice_5.png" />
+    <Content Include="Assets\dice_6.png" />
+    <Content Include="Assets\dice_roll.mp3" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -153,6 +163,10 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Page Include="GameBoard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DiceAnimation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
