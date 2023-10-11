@@ -129,6 +129,9 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Grid.cs" />
+    <Compile Include="Models\Team.cs" />
+    <Compile Include="Models\Teams.cs" />
+    <Compile Include="Models\Token.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
