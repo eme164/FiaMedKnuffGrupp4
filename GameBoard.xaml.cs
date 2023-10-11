@@ -174,27 +174,27 @@ namespace FiaMedKnuffGrupp4
                         {
                             if (IsPointerInsideToken(token, pointerPosition))
                             {
-                                if (selectedToken == token)
+                                if (diceRollResult == 6 && token.isAtBase(grid))
                                 {
-                                    selectedToken = null; // Deselect
-                                }
-                                else
+                                    selectedToken = token; // Select
+                                }else if (!token.isAtBase(grid))
                                 {
                                     selectedToken = token; // Select
                                 }
+                                
 
                                 if (selectedToken != null)
                                 {
                                     selectedToken.MoveToken(selectedToken, diceRollResult, grid);
-
-                                    canvas.Invalidate();
-                                }
 
                                 canvas.Invalidate();
                                 SwitchToNextTeam();
                                 Debug.WriteLine("Current active team: " + currentActiveTeam);
 
                                 diceRollResult = 0;
+                                    EnableDiceClick();
+                                }
+
 
                                 return;
                             }
@@ -286,13 +286,16 @@ namespace FiaMedKnuffGrupp4
         private async void RollDiceButton_Click(object sender, RoutedEventArgs e)
         {
             selectedToken = null;
-                PlayDiceSound();
-                await RollDiceAnimation();
-                diceRollResult = random.Next(1, 7);
-                DiceImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/dice_" + diceRollResult + ".png"));
+            PlayDiceSound();
+            await RollDiceAnimation();
+            diceRollResult = random.Next(1, 7);
+            DiceImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/dice_" + diceRollResult + ".png"));
+            DisableDiceClick();
             if(!IsValidRoll())
             {
+                diceRollResult = 0;
                 SwitchToNextTeam();
+                EnableDiceClick();
             }
             Debug.WriteLine("Current active team: " + currentActiveTeam);
         }
@@ -321,6 +324,14 @@ namespace FiaMedKnuffGrupp4
                 DiceImage.Width = cellSize * 1.5;
                 DiceImage.Height = cellSize * 1.5;
             });
+        }
+        private void DisableDiceClick()
+        {
+            DiceImage.IsHitTestVisible = false;
+        }
+        private void EnableDiceClick()
+        {
+            DiceImage.IsHitTestVisible = true;
         }
     }
 }

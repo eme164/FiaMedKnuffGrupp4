@@ -118,5 +118,17 @@ namespace FiaMedKnuffGrupp4.Models
         {
             return CurrentPositionRow;
         }
+        public bool isAtBase(Grid grid)
+        {
+            int tile = grid.GetTile(CurrentPositionRow, CurrentPositionCol);
+            if (tile == 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }
