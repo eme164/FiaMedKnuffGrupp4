@@ -34,28 +34,29 @@ namespace FiaMedKnuffGrupp4
     {
         private Random random = new Random();
         private readonly Models.Grid grid = new Models.Grid();
-        private Models.Team teamRed = new Models.Team(Colors.Red);
-        private Models.Team teamGreen = new Models.Team(Colors.Green);
-        private Models.Team teamYellow = new Models.Team(Colors.Yellow);
-        private Models.Team teamBlue = new Models.Team(Colors.Blue);
-        private Models.Teams teams = new Models.Teams();
+        private Team teamRed = new Models.Team(Colors.Red);
+        private Team teamGreen = new Models.Team(Colors.Green);
+        private Team teamYellow = new Models.Team(Colors.Yellow);
+        private Team teamBlue = new Models.Team(Colors.Blue);
+        private Teams teams = new Models.Teams();
         private int numberOfColumnsInGrid = 15;
         private bool drawGrid = true; //For debugging purposes
         private float cellSize;
         public Token selectedToken;
         private int diceRollResult;
         CanvasDrawingSession drawingSession;
+        private enum ActiveTeam
+        {
+            Red,
+            Green,
+            Yellow,
+            Blue
+        }
+        private ActiveTeam currentActiveTeam = ActiveTeam.Red;
 
         // Game initialization
         private void InitializeGame()
         {
-
-            var teamRed = new Models.Team(Colors.Red);
-            var teamGreen = new Models.Team(Colors.Green);
-            var teamYellow = new Models.Team(Colors.Yellow);
-            var teamBlue = new Models.Team(Colors.Blue);
-
-
             teamRed.AddToken(new Token("Red1", 10, 1, Colors.Red));
             teamRed.AddToken(new Token("Red2", 13, 1, Colors.Red));
             teamRed.AddToken(new Token("Red3", 10, 4, Colors.Red));
@@ -133,6 +134,7 @@ namespace FiaMedKnuffGrupp4
             setCellSize();
             setCanvasMargin();
             setDiceImageSize();
+            GetActiveTeamColor();
         }
 
         private void canvas_CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args)
@@ -158,48 +160,48 @@ namespace FiaMedKnuffGrupp4
         }
         private void canvas_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            // Get the position of the pointer relative to the canvas.
-            Point pointerPosition = e.GetCurrentPoint(canvas).Position;
-
-            // Check if the pointer is inside the bounds of any token in any team.
-            foreach (Models.Team team in teams.TeamList)
+            if (IsValidRoll())
             {
-                foreach (Token token in team.TeamTokens)
+                Point pointerPosition = e.GetCurrentPoint(canvas).Position;
+
+                // Check if the pointer is inside the bounds of any token in the active team.
+                foreach (Models.Team team in teams.TeamList)
                 {
-                    if (IsPointerInsideToken(token, pointerPosition))
+                    if (team.TeamColor == GetActiveTeamColor())
                     {
-                        // If the clicked token is the same as the currently selected token, deselect it.
-                        if (selectedToken == token)
+                        foreach (Token token in team.TeamTokens)
                         {
-                            selectedToken = null; // Deselect
-                        }
-                        else
-                        {
-                            selectedToken = token; // Select
-                        }
-                        // Check if a token is selected
-                        if (selectedToken != null)
-                        {
-                            // Call the MoveToken method with the selected token, dice roll result, and your grid object.
-                            selectedToken.MoveToken(selectedToken, diceRollResult, grid);
-                            diceRollResult = 0;
+                            if (IsPointerInsideToken(token, pointerPosition))
+                            {
+                                if (selectedToken == token)
+                                {
+                                    selectedToken = null; // Deselect
+                                }
+                                else
+                                {
+                                    selectedToken = token; // Select
+                                }
 
-                            // Redraw the canvas to update the token's position.
-                            canvas.Invalidate();
+                                if (selectedToken != null)
+                                {
+                                    selectedToken.MoveToken(selectedToken, diceRollResult, grid);
+                                    diceRollResult = 0;
+
+                                    canvas.Invalidate();
+                                }
+
+                                canvas.Invalidate();
+
+                                return;
+                            }
                         }
-
-                        // Redraw the canvas to update the token visuals (e.g., to indicate selection).
-                        canvas.Invalidate();
-
-                        // Exit the loop once a token is found within the pointer's bounds.
-                        return;
                     }
                 }
             }
-
-            // Clicked outside of any token, so deselect any previously selected token.
-            selectedToken = null;
-            canvas.Invalidate();
+            else
+            {
+                //TODO: Inform the player that the roll is not valid, if needed.
+            }
         }
 
         private bool IsPointerInsideToken(Token token, Point pointerPosition)
@@ -221,13 +223,61 @@ namespace FiaMedKnuffGrupp4
         }
         private bool IsValidRoll()
         {
-            // Game Turn Management | Ensure that the displayed dice result is updated only when it's the player's turn to roll the dice..
-            return true;  // Placeholder logic: always returns true.
+            // Check if it's the active team's turn to roll.
+            switch (currentActiveTeam)
+            {
+                case ActiveTeam.Red:
+                    return teamRed.HasTokensLeftToMove();
+                case ActiveTeam.Green:
+                    return teamGreen.HasTokensLeftToMove();
+                case ActiveTeam.Yellow:
+                    return teamYellow.HasTokensLeftToMove();
+                case ActiveTeam.Blue:
+                    return teamBlue.HasTokensLeftToMove();
+                default:
+                    return false;
+            }
         }
+        private void SwitchToNextTeam()
+        {
+            switch (currentActiveTeam)
+            {
+                case ActiveTeam.Red:
+                    currentActiveTeam = ActiveTeam.Green;
+                    break;
+                case ActiveTeam.Green:
+                    currentActiveTeam = ActiveTeam.Yellow;
+                    break;
+                case ActiveTeam.Yellow:
+                    currentActiveTeam = ActiveTeam.Blue;
+                    break;
+                case ActiveTeam.Blue:
+                    currentActiveTeam = ActiveTeam.Red;
+                    break;
+            }
+        }
+        private Color GetActiveTeamColor()
+        {
+            switch (currentActiveTeam)
+            {
+                case ActiveTeam.Red:
+                    return Colors.Red;
+                case ActiveTeam.Green:
+                    return Colors.Green;
+                case ActiveTeam.Yellow:
+                    return Colors.Yellow;
+                case ActiveTeam.Blue:
+                    return Colors.Blue;
+                default:
+                    return Colors.Black; // Default color or handle error.
+            }
+        }
+
 
 
         private async void RollDiceButton_Click(object sender, RoutedEventArgs e)
         {
+            selectedToken = null;
             if (IsValidRoll())
             {
                 PlayDiceSound();

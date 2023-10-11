@@ -14,7 +14,7 @@ namespace FiaMedKnuffGrupp4.Models
         public Team(Color teamcolor)
         {
             TeamTokens = new List<Token>();
-            teamcolor = TeamColor;
+            TeamColor = teamcolor;
         }
         public void AddToken(Token token)
         {
@@ -24,6 +24,15 @@ namespace FiaMedKnuffGrupp4.Models
         public void RemoveToken(Token token)
         {
             TeamTokens.Remove(token);
+        }
+        public bool HasTokensLeftToMove() 
+        {
+            //TODO: Implement this method.
+            return true;
+        }
+        public Color getTeamColor()
+        {
+            return TeamColor;
         }
     }
 }
