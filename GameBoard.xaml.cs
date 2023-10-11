@@ -227,18 +227,18 @@ namespace FiaMedKnuffGrupp4
         }
         private bool IsValidRoll()
         {
-            // Check if it's the active team's turn to roll.
             switch (currentActiveTeam)
             {
                 case ActiveTeam.Red:
-                    return teamRed.HasTokensLeftToMove();
+                    return teamRed.HasTokensLeftToMove() && (diceRollResult == 6 || teamRed.HasTokensOnNonZeroCells(grid));
                 case ActiveTeam.Green:
-                    return teamGreen.HasTokensLeftToMove();
+                    return teamGreen.HasTokensLeftToMove() && (diceRollResult == 6 || teamGreen.HasTokensOnNonZeroCells(grid));
                 case ActiveTeam.Yellow:
-                    return teamYellow.HasTokensLeftToMove();
+                    return teamYellow.HasTokensLeftToMove() && (diceRollResult == 6 || teamYellow.HasTokensOnNonZeroCells(grid));
                 case ActiveTeam.Blue:
-                    return teamBlue.HasTokensLeftToMove();
+                    return teamBlue.HasTokensLeftToMove() && (diceRollResult == 6 || teamBlue.HasTokensOnNonZeroCells(grid));
                 default:
+                    SwitchToNextTeam();
                     return false;
             }
         }
@@ -286,17 +286,15 @@ namespace FiaMedKnuffGrupp4
         private async void RollDiceButton_Click(object sender, RoutedEventArgs e)
         {
             selectedToken = null;
-            if (IsValidRoll())
-            {
                 PlayDiceSound();
                 await RollDiceAnimation();
                 diceRollResult = random.Next(1, 7);
                 DiceImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/dice_" + diceRollResult + ".png"));
-            }
-            else
+            if(!IsValidRoll())
             {
-                // Inform the player that the roll is not valid, if needed.
+                SwitchToNextTeam();
             }
+            Debug.WriteLine("Current active team: " + currentActiveTeam);
         }
 
         private MediaPlayer mediaPlayer = new MediaPlayer();

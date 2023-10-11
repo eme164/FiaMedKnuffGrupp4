@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
+using Windows.UI.Xaml.Controls;
 
 namespace FiaMedKnuffGrupp4.Models
 {
@@ -33,6 +34,17 @@ namespace FiaMedKnuffGrupp4.Models
         public Color getTeamColor()
         {
             return TeamColor;
+        }
+        public bool HasTokensOnNonZeroCells(Grid grid)
+        {
+            foreach (Token token in TeamTokens)
+            {
+                if (grid.GetTile(token.getCurrentPositionRow(), token.getCurrentPositionCol()) != 0)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
