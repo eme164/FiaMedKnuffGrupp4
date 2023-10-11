@@ -191,10 +191,10 @@ namespace FiaMedKnuffGrupp4
             // Implement logic to check if the pointer is inside the bounds of the token.
             // You can use token properties (position, size) to perform this check.
             // Return true if the pointer is inside the token, otherwise return false.
-            if (pointerPosition.X > token.getStartingPositionCol() * cellSize &&
-                pointerPosition.X < (token.getStartingPositionCol() + 1) * cellSize &&
-                pointerPosition.Y > token.getStartingPositionRow() * cellSize &&
-                pointerPosition.Y < (token.getStartingPositionRow() + 1) * cellSize)
+            if (pointerPosition.X > token.getCurrentPositionCol() * cellSize &&
+                pointerPosition.X < (token.getCurrentPositionCol() + 1) * cellSize &&
+                pointerPosition.Y > token.getCurrentPositionRow() * cellSize &&
+                pointerPosition.Y < (token.getCurrentPositionRow() + 1) * cellSize)
             {
                 return true;
             }
