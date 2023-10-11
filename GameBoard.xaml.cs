@@ -177,8 +177,8 @@ namespace FiaMedKnuffGrupp4
                         {
                             selectedToken = token; // Select
                         }
-                        // Check if a token is selected and the dice roll result is 1
-                        if (selectedToken != null && diceRollResult == 1)
+                        // Check if a token is selected
+                        if (selectedToken != null)
                         {
                             // Call the MoveToken method with the selected token, dice roll result, and your grid object.
                             selectedToken.MoveToken(selectedToken, diceRollResult, grid);
