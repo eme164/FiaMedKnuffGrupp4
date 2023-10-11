@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.UI.Xaml.Media.Imaging;
+using System.Diagnostics;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -185,12 +186,15 @@ namespace FiaMedKnuffGrupp4
                                 if (selectedToken != null)
                                 {
                                     selectedToken.MoveToken(selectedToken, diceRollResult, grid);
-                                    diceRollResult = 0;
 
                                     canvas.Invalidate();
                                 }
 
                                 canvas.Invalidate();
+                                SwitchToNextTeam();
+                                Debug.WriteLine("Current active team: " + currentActiveTeam);
+
+                                diceRollResult = 0;
 
                                 return;
                             }
@@ -240,20 +244,24 @@ namespace FiaMedKnuffGrupp4
         }
         private void SwitchToNextTeam()
         {
-            switch (currentActiveTeam)
+            if(diceRollResult != 6)
             {
-                case ActiveTeam.Red:
-                    currentActiveTeam = ActiveTeam.Green;
-                    break;
-                case ActiveTeam.Green:
-                    currentActiveTeam = ActiveTeam.Yellow;
-                    break;
-                case ActiveTeam.Yellow:
-                    currentActiveTeam = ActiveTeam.Blue;
-                    break;
-                case ActiveTeam.Blue:
-                    currentActiveTeam = ActiveTeam.Red;
-                    break;
+                switch (currentActiveTeam)
+                {
+                    case ActiveTeam.Red:
+                        currentActiveTeam = ActiveTeam.Green;
+                        break;
+                    case ActiveTeam.Green:
+                        currentActiveTeam = ActiveTeam.Yellow;
+                        break;
+                    case ActiveTeam.Yellow:
+                        currentActiveTeam = ActiveTeam.Blue;
+                        break;
+                    case ActiveTeam.Blue:
+                        currentActiveTeam = ActiveTeam.Red;
+                        break;
+                }
+
             }
         }
         private Color GetActiveTeamColor()
