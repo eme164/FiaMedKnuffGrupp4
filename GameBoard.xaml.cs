@@ -43,6 +43,7 @@ namespace FiaMedKnuffGrupp4
         private bool drawGrid = true; //For debugging purposes
         private float cellSize;
         public Token selectedToken;
+        private int diceRollResult;
         CanvasDrawingSession drawingSession;
 
         // Game initialization
@@ -176,6 +177,16 @@ namespace FiaMedKnuffGrupp4
                         {
                             selectedToken = token; // Select
                         }
+                        // Check if a token is selected and the dice roll result is 1
+                        if (selectedToken != null && diceRollResult == 1)
+                        {
+                            // Call the MoveToken method with the selected token, dice roll result, and your grid object.
+                            selectedToken.MoveToken(selectedToken, diceRollResult, grid);
+                            diceRollResult = 0;
+
+                            // Redraw the canvas to update the token's position.
+                            canvas.Invalidate();
+                        }
 
                         // Redraw the canvas to update the token visuals (e.g., to indicate selection).
                         canvas.Invalidate();
@@ -221,7 +232,7 @@ namespace FiaMedKnuffGrupp4
             {
                 PlayDiceSound();
                 await RollDiceAnimation();
-                int diceRollResult = random.Next(1, 7);
+                diceRollResult = random.Next(1, 7);
                 DiceImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/dice_" + diceRollResult + ".png"));
             }
             else

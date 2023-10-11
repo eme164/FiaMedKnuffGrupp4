@@ -24,9 +24,31 @@ namespace FiaMedKnuffGrupp4.Models
             TokenColor = tokenColor;
         }
 
-        public void MoveToken()
+        public void MoveToken(Token token, int diceRollResult, Grid grid)
         {
-
+            if(diceRollResult == 1) 
+            { 
+                if(token.TokenColor == Colors.Red && grid.GetTile(CurrentPositionCol,CurrentPositionRow) == 0)
+                {
+                    CurrentPositionCol = 6;
+                    CurrentPositionRow = 13;
+                }
+                else if(token.TokenColor == Colors.Green && grid.GetTile(CurrentPositionCol, CurrentPositionRow) == 0)
+                {
+                    CurrentPositionCol = 1;
+                    CurrentPositionRow = 6;
+                }
+                else if(token.TokenColor == Colors.Blue && grid.GetTile(CurrentPositionCol, CurrentPositionRow) == 0)
+                {
+                    CurrentPositionCol = 13;
+                    CurrentPositionRow = 8;
+                }
+                else if(token.TokenColor == Colors.Yellow && grid.GetTile(CurrentPositionCol, CurrentPositionRow) == 0)
+                {
+                    CurrentPositionCol = 8;
+                    CurrentPositionRow = 1;
+                }
+            }
         }
 
         //draw token using win2d DrawingSession
