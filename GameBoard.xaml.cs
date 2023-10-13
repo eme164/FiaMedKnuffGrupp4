@@ -136,6 +136,14 @@ namespace FiaMedKnuffGrupp4
             setCanvasMargin();
             setDiceImageSize();
             GetActiveTeamColor();
+
+            foreach (Models.Team team in teams.TeamList)
+            {
+                foreach (Token token in team.TeamTokens)
+                {
+                    token.UpdateAnimation();
+                }
+            }
         }
 
         private void canvas_CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args)
