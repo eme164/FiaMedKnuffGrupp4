@@ -41,7 +41,7 @@ namespace FiaMedKnuffGrupp4
         private Team teamBlue = new Models.Team(Colors.Blue);
         private Teams teams = new Models.Teams();
         private int numberOfColumnsInGrid = 15;
-        private bool drawGrid = true; //For debugging purposes
+        private bool drawGrid = false; //For debugging purposes
         private float cellSize;
         public Token selectedToken;
         private int diceRollResult;
@@ -169,6 +169,12 @@ namespace FiaMedKnuffGrupp4
         }
         private void canvas_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
+            if (diceRollResult == 0)
+            {
+                //TODO: Replace the debug line with some actual in game indication that the dice needs to be rolled first.
+                Debug.WriteLine("Roll the dice first!");
+                return;
+            }
             if (IsValidRoll())
             {
                 Point pointerPosition = e.GetCurrentPoint(canvas).Position;
