@@ -168,23 +168,39 @@ namespace FiaMedKnuffGrupp4.Models
         }
 
         //draw token using win2d DrawingSession
-        public void DrawToken(CanvasDrawingSession drawingSession, float cellSize, bool isSelected)
+        public void DrawToken(CanvasDrawingSession drawingSession, float cellSize, bool isSelected, List<Token> allTokens)
         {
             // Calculate the token's position based on its current animated position.
             float tokenX = AnimatedX * cellSize + cellSize / 2;
             float tokenY = AnimatedY * cellSize + cellSize / 2;
 
+            var tokensAtSamePosition = allTokens.Where(t =>
+            t.CurrentPositionRow == this.CurrentPositionRow &&
+            t.CurrentPositionCol == this.CurrentPositionCol &&
+            t.TokenColor == this.TokenColor).ToList();
+
+            if(tokensAtSamePosition.Count > 1)
+            {
+                if (tokensAtSamePosition[0] == this)
+                {
+                    tokenX += cellSize * 0.1f;
+                    tokenY += cellSize * 0.1f;
+                }
+                else
+                {
+                    tokenX -= cellSize * 0.1f;
+                    tokenY -= cellSize * 0.1f;
+                }   
+            }
             // Define the token's radius and color.
             Color tokenColor = TokenColor;
 
-            // If the token is selected, change its color to indicate selection.
-            if (isSelected)
-            {
-                tokenColor = Colors.PaleGreen;
-            }
-
             // Calculate the adjusted size which scales the size of the token based on its animation.
             float adjustedSize = cellSize * Scale;
+
+            // Draw the outline of the token.
+            float outlineThickness = 4.0f;  // Adjust thickness as needed
+            drawingSession.DrawCircle(tokenX, tokenY, adjustedSize / 3, Colors.Black, outlineThickness);
 
             // Draw the token with the adjusted size and animated position.
             drawingSession.FillCircle(tokenX, tokenY, adjustedSize / 3, tokenColor);

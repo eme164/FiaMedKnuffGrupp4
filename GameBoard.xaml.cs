@@ -140,7 +140,7 @@ namespace FiaMedKnuffGrupp4
             {
                 foreach (Token token in team.TeamTokens)
                 {
-                    token.DrawToken(drawingSession, cellSize, token == selectedToken);
+                    token.DrawToken(drawingSession, cellSize, token == selectedToken, AllTokens());
                 }
             }
         }
