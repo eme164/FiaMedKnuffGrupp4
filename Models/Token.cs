@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI;
+using Windows.UI.Xaml.Controls;
 
 namespace FiaMedKnuffGrupp4.Models
 {
@@ -15,6 +16,15 @@ namespace FiaMedKnuffGrupp4.Models
         public int CurrentPositionRow { get; set; }
         public int CurrentPositionCol { get; set; }
         public Color TokenColor { get; set; }
+        public float AnimatedX { get; private set; }
+        public float AnimatedY { get; private set; }
+        private float targetX, targetY;
+        private float startX, startY;
+        private DateTime startTime;
+        public bool IsAnimating { get; private set; } = false;
+        private const float Duration = 1f; // half a second per tile
+        public float Scale { get; set; } = 1.0f;
+
 
         public Token(string tokenID, int currentPositionRow, int currentPositionCol, Color tokenColor)
         {
@@ -22,6 +32,8 @@ namespace FiaMedKnuffGrupp4.Models
             CurrentPositionCol = currentPositionCol;
             CurrentPositionRow = currentPositionRow;
             TokenColor = tokenColor;
+            AnimatedX = currentPositionCol;
+            AnimatedY = currentPositionRow;
         }
 
         public void MoveToken(Token token, int diceRollResult, Grid grid)
@@ -88,27 +100,73 @@ namespace FiaMedKnuffGrupp4.Models
                 }
                 tile = grid.GetTile(CurrentPositionRow, CurrentPositionCol);
             }
+            startX = AnimatedX;
+            startY = AnimatedY;
+            targetX = CurrentPositionCol; // this assumes one unit per tile
+            targetY = CurrentPositionRow; // this assumes one unit per tile
+            startTime = DateTime.Now;
+            IsAnimating = true;
+
+        }
+        public void UpdateAnimation()
+        {
+            if (!IsAnimating) return;
+
+            var elapsed = (float)(DateTime.Now - startTime).TotalSeconds;
+            var t = elapsed / Duration;
+
+            // Use LERP to determine the current animated position
+            AnimatedX = startX + t * (targetX - startX);
+            AnimatedY = startY + t * (targetY - startY);
+
+            // Quadratic in-out easing function
+            float EaseInOutQuad(float time)
+            {
+                return time < 0.5 ? 2 * time * time : -1 + (4 - 2 * time) * time;
+            }
+
+            float scaleChange = EaseInOutQuad(t);
+
+            // Use the eased value to adjust the scale over the animation
+            if (t <= 0.5)
+            {
+                Scale = 1.0f + scaleChange * 0.9f;
+            }
+            else
+            {
+                Scale = 1.0f + (1 - scaleChange) * 0.9f;
+            }
+
+            if (t >= 1)
+            {
+                IsAnimating = false;
+                AnimatedX = targetX;
+                AnimatedY = targetY;
+                Scale = 1.0f;
+            }
         }
 
         //draw token using win2d DrawingSession
         public void DrawToken(CanvasDrawingSession drawingSession, float cellSize, bool isSelected)
         {
-            // Calculate the token's position based on row and column, as you did before.
-            float tokenX = CurrentPositionCol * cellSize + cellSize / 2;
-            float tokenY = CurrentPositionRow * cellSize + cellSize / 2;
+            // Calculate the token's position based on its current animated position.
+            float tokenX = AnimatedX * cellSize + cellSize / 2;
+            float tokenY = AnimatedY * cellSize + cellSize / 2;
 
             // Define the token's radius and color.
-            float tokenRadius = cellSize / 3;
             Color tokenColor = TokenColor;
 
             // If the token is selected, change its color to indicate selection.
             if (isSelected)
             {
-                tokenColor = Colors.PaleGreen; // Change the color to blue (or any color of your choice).
+                tokenColor = Colors.PaleGreen;
             }
 
-            // Draw the token.
-            drawingSession.FillCircle(tokenX, tokenY, tokenRadius, tokenColor);
+            // Calculate the adjusted size which scales the size of the token based on its animation.
+            float adjustedSize = cellSize * Scale;
+
+            // Draw the token with the adjusted size and animated position.
+            drawingSession.FillCircle(tokenX, tokenY, adjustedSize / 3, tokenColor);
         }
         public int getCurrentPositionCol()
         {
