@@ -53,7 +53,8 @@ namespace FiaMedKnuffGrupp4
             Yellow,
             Blue
         }
-        private ActiveTeam currentActiveTeam = ActiveTeam.Red;
+        //Randomize who starts the game
+        private ActiveTeam currentActiveTeam = (ActiveTeam)new Random().Next(0, 4);
 
         // Game initialization
         //CREATING TOKENS WITH THEIR STARTING POSITIONS AND PLACING THEM IN A TEAM
@@ -104,6 +105,7 @@ namespace FiaMedKnuffGrupp4
         {
             this.InitializeComponent();
             InitializeGame();
+            Debug.WriteLine("Current active team: " + currentActiveTeam);
         }
 
         //DRAWING THE BOARD AND TOKENS
