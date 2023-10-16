@@ -297,8 +297,35 @@ namespace FiaMedKnuffGrupp4
                 SwitchToNextTeam();
                 EnableDiceClick();
             }
+
+            else
+            {
+                if (diceRollResult == 6)
+                {
+                    // If a six was rolled, notify the player with your new method.
+                    NotifyPlayerForSix();
+                }
+            }
             Debug.WriteLine("Current active team: " + currentActiveTeam);
         }
+
+        private async void NotifyPlayerForSix()
+        {
+            // Play the sound for rolling a six
+            mediaPlayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/noftication_roll6.mp3")); 
+            mediaPlayer.Play();
+
+            // Notify the player with a dialog (or another UI element)
+            ContentDialog rollSixDialog = new ContentDialog
+            {
+                Title = "Great Roll" + " " + currentActiveTeam + "!",
+                Content = "You rolled a six! You get another turn.",
+                CloseButtonText = "Awesome!"
+            };
+
+            await rollSixDialog.ShowAsync();
+        }
+
 
         private MediaPlayer mediaPlayer = new MediaPlayer();
         private void PlayDiceSound()
