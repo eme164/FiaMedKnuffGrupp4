@@ -56,6 +56,7 @@ namespace FiaMedKnuffGrupp4
         private ActiveTeam currentActiveTeam = ActiveTeam.Red;
 
         // Game initialization
+        //CREATING TOKENS WITH THEIR STARTING POSITIONS AND PLACING THEM IN A TEAM
         private void InitializeGame()
         {
             teamRed.AddToken(new Token("Red1", 10, 1, Colors.Red));
@@ -84,7 +85,19 @@ namespace FiaMedKnuffGrupp4
             teams.AddTeam(teamYellow);
             teams.AddTeam(teamBlue);
         }
-
+        //LIST OF ALL TOKENS TO CHECK FOR COLLISIONS
+        private List<Token> AllTokens()
+        {
+            List<Token> allTokens = new List<Token>();
+            foreach (Models.Team team in teams.TeamList)
+            {
+                foreach (Token token in team.TeamTokens)
+                {
+                    allTokens.Add(token);
+                }
+            }
+            return allTokens;
+        }
 
 
         public GameBoard()
@@ -92,6 +105,8 @@ namespace FiaMedKnuffGrupp4
             this.InitializeComponent();
             InitializeGame();
         }
+
+        //DRAWING THE BOARD AND TOKENS
         private void canvas_Draw(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedDrawEventArgs args)
         {
             drawingSession = args.DrawingSession;
@@ -167,6 +182,7 @@ namespace FiaMedKnuffGrupp4
                                                                 (boardGrid.ActualWidth - backgroundImage.ActualWidth) / 2, (boardGrid.ActualHeight - backgroundImage.ActualHeight) / 2);
             });
         }
+
         private void canvas_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             if (diceRollResult == 0)
@@ -199,7 +215,7 @@ namespace FiaMedKnuffGrupp4
 
                                 if (selectedToken != null)
                                 {
-                                    selectedToken.MoveToken(selectedToken, diceRollResult, grid);
+                                    selectedToken.MoveToken(selectedToken, diceRollResult, grid, AllTokens());
 
                                 canvas.Invalidate();
                                 SwitchToNextTeam();
@@ -239,6 +255,8 @@ namespace FiaMedKnuffGrupp4
                 return false;
             }
         }
+
+        //HasTokensLeftToMove() is not implemented yet, so this method will always return true.
         private bool IsValidRoll()
         {
             switch (currentActiveTeam)
@@ -256,6 +274,7 @@ namespace FiaMedKnuffGrupp4
                     return false;
             }
         }
+        //Call this method to switch to the next team.
         private void SwitchToNextTeam()
         {
             if(diceRollResult != 6)

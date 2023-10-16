@@ -29,6 +29,7 @@ namespace FiaMedKnuffGrupp4.Models
         public bool HasTokensLeftToMove() 
         {
             //TODO: Implement this method.
+
             return true;
         }
         public Color getTeamColor()

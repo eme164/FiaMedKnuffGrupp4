@@ -24,6 +24,8 @@ namespace FiaMedKnuffGrupp4.Models
         public bool IsAnimating { get; private set; } = false;
         private const float Duration = 1f; // half a second per tile
         public float Scale { get; set; } = 1.0f;
+        private readonly int StartPositionRow;
+        private readonly int StartPositionCol;
 
 
         public Token(string tokenID, int currentPositionRow, int currentPositionCol, Color tokenColor)
@@ -34,9 +36,11 @@ namespace FiaMedKnuffGrupp4.Models
             TokenColor = tokenColor;
             AnimatedX = currentPositionCol;
             AnimatedY = currentPositionRow;
+            StartPositionCol = currentPositionCol;
+            StartPositionRow = currentPositionRow;
         }
 
-        public void MoveToken(Token token, int diceRollResult, Grid grid)
+        public void MoveToken(Token token, int diceRollResult, Grid grid, List<Token> allTokens)
         {
             int tile = grid.GetTile(CurrentPositionRow, CurrentPositionCol);
             if(diceRollResult == 6 && tile == 0) 
@@ -100,6 +104,16 @@ namespace FiaMedKnuffGrupp4.Models
                 }
                 tile = grid.GetTile(CurrentPositionRow, CurrentPositionCol);
             }
+
+            foreach (var otherToken in allTokens)
+            {
+                if (this.CollidesWith(otherToken))
+                {
+                    otherToken.resetToken();
+                }
+            }
+
+
             startX = AnimatedX;
             startY = AnimatedY;
             targetX = CurrentPositionCol; // this assumes one unit per tile
@@ -107,6 +121,13 @@ namespace FiaMedKnuffGrupp4.Models
             startTime = DateTime.Now;
             IsAnimating = true;
 
+        }
+        public bool CollidesWith(Token other)
+        {
+            // Check if they are at the same position and have different colors.
+            return this.CurrentPositionRow == other.CurrentPositionRow &&
+                   this.CurrentPositionCol == other.CurrentPositionCol &&
+                   this.TokenColor != other.TokenColor;
         }
         public void UpdateAnimation()
         {
@@ -187,6 +208,17 @@ namespace FiaMedKnuffGrupp4.Models
             {
                 return false;
             }
+        }
+        public void resetToken()
+        {
+            CurrentPositionCol = StartPositionCol;
+            CurrentPositionRow = StartPositionRow;
+            startX = AnimatedX;
+            startY = AnimatedY;
+            targetX = StartPositionCol;
+            targetY = StartPositionRow;
+            startTime = DateTime.Now;
+            IsAnimating = true;
         }
     }
 }
