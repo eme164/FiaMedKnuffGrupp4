@@ -129,7 +129,9 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Grid.cs" />
-    <Compile Include="Models\Persistence\HighscoreManager.cs" />
+    <Compile Include="Models\Team.cs" />
+    <Compile Include="Models\Teams.cs" />
+    <Compile Include="Models\Token.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\HighscorePage\HighscorePage.xaml.cs">
       <DependentUpon>HighscorePage.xaml</DependentUpon>
@@ -149,6 +151,9 @@
     <Content Include="Assets\dice_5.png" />
     <Content Include="Assets\dice_6.png" />
     <Content Include="Assets\dice_roll.mp3" />
+    <Content Include="Assets\LUDO.png" />
+    <Content Include="Assets\Mask group.png" />
+    <Content Include="Assets\noftication_roll6.mp3" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
