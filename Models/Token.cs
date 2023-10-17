@@ -50,13 +50,12 @@ namespace FiaMedKnuffGrupp4.Models
             int stepsRequired = StepsToGoal(token, grid);
 
             //THIS DOES NOT WORK HOW I WANT IT TO WORK AT THE MOMENT
-            if (diceRollResult > stepsRequired)
-            {
-                //TODO: Decide what should happen if the dice roll result is higher than the steps required to reach the goal.
-                Debug.WriteLine("You rolled too high!");
-                diceRollResult = 0;
-                canContinueMoving = false;
-            }
+            //if (diceRollResult > stepsRequired)
+            //{
+            //    //TODO: Decide what should happen if the dice roll result is higher than the steps required to reach the goal.
+            //    Debug.WriteLine("You rolled too high!");
+                
+            //}
 
             if (diceRollResult == 6 && tile == 0)
             {

@@ -189,50 +189,61 @@ namespace FiaMedKnuffGrupp4
         {
             if (diceRollResult == 0)
             {
-                //TODO: Replace the debug line with some actual in game indication that the dice needs to be rolled first.
+                //TODO: Replace the debug line with some actual in-game indication that the dice needs to be rolled first.
                 Debug.WriteLine("Roll the dice first!");
                 return;
             }
-            if (IsValidRoll())
+
+            Point pointerPosition = e.GetCurrentPoint(canvas).Position;
+
+            Models.Team activeTeam = teams.TeamList.FirstOrDefault(t => t.TeamColor == GetActiveTeamColor());
+            if (activeTeam == null)
             {
-                Point pointerPosition = e.GetCurrentPoint(canvas).Position;
+                // No active team found.
+                return;
+            }
 
-                // Check if the pointer is inside the bounds of any token in the active team.
-                foreach (Models.Team team in teams.TeamList)
+            bool validMoveFound = false;
+
+            foreach (Token token in activeTeam.TeamTokens)
+            {
+                if (IsPointerInsideToken(token, pointerPosition))
                 {
-                    if (team.TeamColor == GetActiveTeamColor())
+                    int stepsToGoal = StepsToGoal(token);
+
+                    // Check if the dice roll result would exceed the steps to goal
+                    if (diceRollResult <= stepsToGoal)
                     {
-                        foreach (Token token in team.TeamTokens)
+                        if ((diceRollResult == 6 && token.isAtBase(grid)) || !token.isAtBase(grid))
                         {
-                            if (IsPointerInsideToken(token, pointerPosition))
-                            {
-                                if (diceRollResult == 6 && token.isAtBase(grid))
-                                {
-                                    selectedToken = token; // Select
-                                }else if (!token.isAtBase(grid))
-                                {
-                                    selectedToken = token; // Select
-                                }
-                                
-
-                                if (selectedToken != null)
-                                {
-                                    selectedToken.MoveToken(selectedToken, diceRollResult, grid, AllTokens());
-
-                                canvas.Invalidate();
-                                SwitchToNextTeam();
-                                Debug.WriteLine("Current active team: " + currentActiveTeam);
-
-                                diceRollResult = 0;
-                                    EnableDiceClick();
-                                }
-
-
-                                return;
-                            }
+                            selectedToken = token; // Select token
+                            validMoveFound = true;
                         }
                     }
                 }
+
+                if (validMoveFound)
+                {
+                    break;
+                }
+            }
+
+            if (validMoveFound && selectedToken != null)
+            {
+                selectedToken.MoveToken(selectedToken, diceRollResult, grid, AllTokens());
+                canvas.Invalidate();
+                SwitchToNextTeam();
+                Debug.WriteLine("Current active team: " + currentActiveTeam);
+                diceRollResult = 0;
+                EnableDiceClick();
+            }
+            else if (!IsValidRoll())
+            {
+                // If the roll isn't valid and no valid moves can be made, switch to the next team.
+                Debug.WriteLine("No valid moves available for current team. Switching...");
+                SwitchToNextTeam();
+                diceRollResult = 0;  // Reset the dice roll
+                EnableDiceClick();
             }
             else
             {
@@ -258,24 +269,45 @@ namespace FiaMedKnuffGrupp4
             }
         }
 
-        //HasTokensLeftToMove() is not implemented yet, so this method will always return true.
         private bool IsValidRoll()
+        {
+            Models.Team activeTeam = GetCurrentTeam();
+
+            // If any token is in base and roll is 6, it's valid.
+            if (diceRollResult == 6 && activeTeam.HasTokensInBase(grid))
+                return true;
+
+            // If there are tokens outside the base, check if they can move with the current roll.
+            foreach (Token token in activeTeam.TeamTokens)
+            {
+                if (!token.isAtBase(grid))
+                {
+                    int stepsToGoal = StepsToGoal(token);
+                    if (diceRollResult <= stepsToGoal)
+                        return true; // found a valid move for the current roll
+                }
+            }
+
+            return false;
+        }
+
+        private Models.Team GetCurrentTeam()
         {
             switch (currentActiveTeam)
             {
                 case ActiveTeam.Red:
-                    return teamRed.HasTokensLeftToMove() && (diceRollResult == 6 || teamRed.HasTokensOnNonZeroCells(grid));
+                    return teamRed;
                 case ActiveTeam.Green:
-                    return teamGreen.HasTokensLeftToMove() && (diceRollResult == 6 || teamGreen.HasTokensOnNonZeroCells(grid));
+                    return teamGreen;
                 case ActiveTeam.Yellow:
-                    return teamYellow.HasTokensLeftToMove() && (diceRollResult == 6 || teamYellow.HasTokensOnNonZeroCells(grid));
+                    return teamYellow;
                 case ActiveTeam.Blue:
-                    return teamBlue.HasTokensLeftToMove() && (diceRollResult == 6 || teamBlue.HasTokensOnNonZeroCells(grid));
+                    return teamBlue;
                 default:
-                    SwitchToNextTeam();
-                    return false;
+                    throw new Exception("Invalid team."); // You can handle this however you like.
             }
         }
+
         //Call this method to switch to the next team.
         private void SwitchToNextTeam()
         {
@@ -323,7 +355,7 @@ namespace FiaMedKnuffGrupp4
             selectedToken = null;
             PlayDiceSound();
             await RollDiceAnimation();
-            diceRollResult = random.Next(4, 7);
+            diceRollResult = random.Next(1, 7);
             DiceImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/dice_" + diceRollResult + ".png"));
             DisableDiceClick();
             if(!IsValidRoll())
@@ -394,6 +426,36 @@ namespace FiaMedKnuffGrupp4
         private void EnableDiceClick()
         {
             DiceImage.IsHitTestVisible = true;
+        }
+        public int StepsToGoal(Token token)
+        {
+            int steps = 0;
+            int tile = grid.GetTile(token.CurrentPositionRow, token.CurrentPositionCol);
+            int tempRow = token.CurrentPositionRow;
+            int tempCol = token.CurrentPositionCol;
+
+            while (tile != 15 && steps < 100) // we add a maximum of 100 steps to prevent infinite loops in case of errors
+            {
+                switch (tile)
+                {
+                    case 1:
+                        tempRow--;
+                        break;
+                    case 2:
+                        tempCol++;
+                        break;
+                    case 4:
+                        tempRow++;
+                        break;
+                    case 8:
+                        tempCol--;
+                        break;
+                }
+                tile = grid.GetTile(tempRow, tempCol);
+                steps++;
+            }
+
+            return steps;
         }
     }
 }
