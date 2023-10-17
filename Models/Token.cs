@@ -3,6 +3,7 @@ using Microsoft.Graphics.Canvas.Text;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
@@ -46,6 +47,17 @@ namespace FiaMedKnuffGrupp4.Models
         {
             bool canContinueMoving = true;
             int tile = grid.GetTile(CurrentPositionRow, CurrentPositionCol);
+            int stepsRequired = StepsToGoal(token, grid);
+
+            //THIS DOES NOT WORK HOW I WANT IT TO WORK AT THE MOMENT
+            if (diceRollResult > stepsRequired)
+            {
+                //TODO: Decide what should happen if the dice roll result is higher than the steps required to reach the goal.
+                Debug.WriteLine("You rolled too high!");
+                diceRollResult = 0;
+                canContinueMoving = false;
+            }
+
             if (diceRollResult == 6 && tile == 0)
             {
                 if (token.TokenColor == Colors.Red)
@@ -70,7 +82,7 @@ namespace FiaMedKnuffGrupp4.Models
                 }
                 diceRollResult = 0;
             }
-            //1 = Up, 2 = Right,3 = up & right 4 = Down, 5 = down / right 6 = left / up 8 = Left 9 = left / down 11
+            // 1 = Up, 2 = Right,3 = up&right 4 = Down, 5 = down/right 6 = left/up 8 = Left 9 = left/down 11 = greencolumn, 12 = yellowcolumn, 13 = bluecolumn, 14 = redcolumn 15 = goal
             //Only move as many cells as the dice roll result.
             int tempRow = CurrentPositionRow;
             int tempCol = CurrentPositionCol;
@@ -107,6 +119,55 @@ namespace FiaMedKnuffGrupp4.Models
                         tempCol--;
                         tempRow++;
                         break;
+                    case 11:
+                        if(token.TokenColor == Colors.Green)
+                        {
+                            tempCol++;
+                            break;
+                        }
+                        else
+                        {
+                            tempRow--;
+                        break;
+                        }
+                    case 12:
+                        if(token.TokenColor == Colors.Yellow)
+                        {
+                            tempRow++;
+                            break;
+                        }
+                        else
+                        {
+                            tempCol++;
+                            break;
+                        }
+                    case 13:
+                        if(token.TokenColor == Colors.Blue)
+                        {
+                            tempCol--;
+                            break;
+                        }
+                        else
+                        {
+                            tempRow++;
+                            break;
+                        }
+                    case 14:
+                        if(token.TokenColor == Colors.Red)
+                        {
+                            tempRow--;
+                            break;
+                        }
+                        else
+                        {
+                            tempCol--;
+                            break;
+                        }
+                    case 15: //TODO: Decide what should happen to the token who reached the goal.
+                        canContinueMoving = false;
+                        Debug.WriteLine("You have reached the goal!");
+                        break;
+
                 }
 
                 tile = grid.GetTile(tempRow, tempCol);
@@ -262,5 +323,36 @@ namespace FiaMedKnuffGrupp4.Models
             startTime = DateTime.Now;
             IsAnimating = true;
         }
+        public int StepsToGoal(Token token, Grid grid)
+        {
+            int steps = 0;
+            int tile = grid.GetTile(token.CurrentPositionRow, token.CurrentPositionCol);
+            int tempRow = token.CurrentPositionRow;
+            int tempCol = token.CurrentPositionCol;
+
+            while (tile != 15 && steps < 100) // we add a maximum of 100 steps to prevent infinite loops in case of errors
+            {
+                switch (tile)
+                {
+                    case 1:
+                        tempRow--;
+                        break;
+                    case 2:
+                        tempCol++;
+                        break;
+                    case 4:
+                        tempRow++;
+                        break;
+                    case 8:
+                        tempCol--;
+                        break;
+                }
+                tile = grid.GetTile(tempRow, tempCol);
+                steps++;
+            }
+
+            return steps;
+        }
+
     }
 }

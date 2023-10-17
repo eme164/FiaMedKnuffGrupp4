@@ -323,7 +323,7 @@ namespace FiaMedKnuffGrupp4
             selectedToken = null;
             PlayDiceSound();
             await RollDiceAnimation();
-            diceRollResult = random.Next(1, 7);
+            diceRollResult = random.Next(4, 7);
             DiceImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/dice_" + diceRollResult + ".png"));
             DisableDiceClick();
             if(!IsValidRoll())
