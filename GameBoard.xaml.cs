@@ -23,6 +23,7 @@ using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Diagnostics;
+using ColorCode.Common;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -46,6 +47,7 @@ namespace FiaMedKnuffGrupp4
         public Token selectedToken;
         private int diceRollResult;
         CanvasDrawingSession drawingSession;
+        private int redTokensInGoal = 0;
         private enum ActiveTeam
         {
             Red,
@@ -151,7 +153,10 @@ namespace FiaMedKnuffGrupp4
             {
                 foreach (Token token in team.TeamTokens)
                 {
-                    token.DrawToken(drawingSession, cellSize, token == selectedToken, AllTokens());
+                    if (!token.isInsideGoal)
+                    {
+                        token.DrawToken(drawingSession, cellSize, token == selectedToken, AllTokens());
+                    }
                 }
             }
             
@@ -163,6 +168,7 @@ namespace FiaMedKnuffGrupp4
             setCanvasMargin();
             setDiceImageAndVictoryImageSize();
             GetActiveTeamColor();
+            UpdateRedGoalsOpacity();
 
             foreach (Models.Team team in teams.TeamList)
             {
@@ -434,7 +440,7 @@ namespace FiaMedKnuffGrupp4
 
                 victoryImage.Height = cellSize * 8;
                 victoryImage.Width = cellSize * 8;
-                contentBoarder.Width = backgroundImage.ActualWidth;
+                bottomGrid.Width = backgroundImage.ActualWidth;
             });
 
         }
@@ -489,5 +495,19 @@ namespace FiaMedKnuffGrupp4
 
             return steps;
         }
+        private async void UpdateRedGoalsOpacity()
+        {
+            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                for(int i = 0; i < 4; i++)
+                {
+                    if (teamRed.TeamTokens[i].isInsideGoal)
+                    {
+                        redTokensGoal.Children[i].Opacity = 1;
+                    }
+                }
+            });
+        }
     }
+
 }
