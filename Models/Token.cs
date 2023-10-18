@@ -29,6 +29,7 @@ namespace FiaMedKnuffGrupp4.Models
         public float Scale { get; set; } = 1.0f;
         private readonly int StartPositionRow;
         private readonly int StartPositionCol;
+        public bool isInsideGoal { get; private set; }
 
 
         public Token(string tokenID, int currentPositionRow, int currentPositionCol, Color tokenColor)
@@ -41,6 +42,7 @@ namespace FiaMedKnuffGrupp4.Models
             AnimatedY = currentPositionRow;
             StartPositionCol = currentPositionCol;
             StartPositionRow = currentPositionRow;
+            isInsideGoal = false;
         }
 
         public void MoveToken(Token token, int diceRollResult, Grid grid, List<Token> allTokens)
@@ -164,12 +166,16 @@ namespace FiaMedKnuffGrupp4.Models
                         }
                     case 15: //TODO: Decide what should happen to the token who reached the goal.
                         canContinueMoving = false;
-                        Debug.WriteLine("You have reached the goal!");
                         break;
 
                 }
 
                 tile = grid.GetTile(tempRow, tempCol);
+                if(tile == 15)
+                {
+                    isInsideGoal = true;
+                    Debug.WriteLine("You have reached the goal!");
+                }
 
                 var tokensAtNextPosition = allTokens.Where(t =>
                    t.CurrentPositionRow == tempRow &&

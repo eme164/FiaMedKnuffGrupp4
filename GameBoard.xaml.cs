@@ -60,10 +60,17 @@ namespace FiaMedKnuffGrupp4
         //CREATING TOKENS WITH THEIR STARTING POSITIONS AND PLACING THEM IN A TEAM
         private void InitializeGame()
         {
-            teamRed.AddToken(new Token("Red1", 10, 1, Colors.Red));
-            teamRed.AddToken(new Token("Red2", 13, 1, Colors.Red));
-            teamRed.AddToken(new Token("Red3", 10, 4, Colors.Red));
-            teamRed.AddToken(new Token("Red4", 13, 4, Colors.Red));
+            //Original placement of tokens
+            //teamRed.AddToken(new Token("Red1", 10, 1, Colors.Red));
+            //teamRed.AddToken(new Token("Red2", 13, 1, Colors.Red));
+            //teamRed.AddToken(new Token("Red3", 10, 4, Colors.Red));
+            //teamRed.AddToken(new Token("Red4", 13, 4, Colors.Red));
+
+            //Only for testing purposes to get tokens to goal faster
+            teamRed.AddToken(new Token("Red1", 10, 7, Colors.Red));
+            teamRed.AddToken(new Token("Red2", 9, 7, Colors.Red));
+            teamRed.AddToken(new Token("Red3", 9, 7, Colors.Red));
+            teamRed.AddToken(new Token("Red4", 10, 7, Colors.Red));
 
             teamGreen.AddToken(new Token("Green1", 1, 1, Colors.Green));
             teamGreen.AddToken(new Token("Green2", 1, 4, Colors.Green));
@@ -119,6 +126,8 @@ namespace FiaMedKnuffGrupp4
                 FontSize = fontSize
             };
 
+            
+
             // Loop through all cells and draw a black outline with coordinates inside each cell.
             if (drawGrid)
             {
@@ -145,6 +154,7 @@ namespace FiaMedKnuffGrupp4
                     token.DrawToken(drawingSession, cellSize, token == selectedToken, AllTokens());
                 }
             }
+            
         }
 
         private void canvas_Update(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedUpdateEventArgs args)
@@ -232,6 +242,10 @@ namespace FiaMedKnuffGrupp4
             {
                 selectedToken.MoveToken(selectedToken, diceRollResult, grid, AllTokens());
                 canvas.Invalidate();
+                if(AllTokensAtGoal())
+                {
+                    Debug.WriteLine("All tokens at goal");
+                }
                 SwitchToNextTeam();
                 Debug.WriteLine("Current active team: " + currentActiveTeam);
                 diceRollResult = 0;
@@ -355,7 +369,7 @@ namespace FiaMedKnuffGrupp4
             selectedToken = null;
             PlayDiceSound();
             await RollDiceAnimation();
-            diceRollResult = random.Next(1, 7);
+            diceRollResult = random.Next(1, 3);
             DiceImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/dice_" + diceRollResult + ".png"));
             DisableDiceClick();
             if(!IsValidRoll())
@@ -418,6 +432,18 @@ namespace FiaMedKnuffGrupp4
                 DiceImage.Width = cellSize * 1.5;
                 DiceImage.Height = cellSize * 1.5;
             });
+        }
+        //check if all tokens in current active team are at goal
+        private bool AllTokensAtGoal()
+        {
+            foreach(Token token in GetCurrentTeam().TeamTokens)
+            {
+                if (!token.isInsideGoal)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
         private void DisableDiceClick()
         {
