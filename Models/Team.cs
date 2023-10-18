@@ -26,12 +26,6 @@ namespace FiaMedKnuffGrupp4.Models
         {
             TeamTokens.Remove(token);
         }
-        public bool HasTokensLeftToMove() 
-        {
-            //TODO: Implement this method.
-
-            return true;
-        }
         public Color getTeamColor()
         {
             return TeamColor;
@@ -47,5 +41,17 @@ namespace FiaMedKnuffGrupp4.Models
             }
             return false;
         }
+        public bool HasTokensInBase(Grid grid)
+        {
+            foreach (Token token in this.TeamTokens)
+            {
+                if (token.isAtBase(grid))
+                {
+                    return true; // At least one token is at the base.
+                }
+            }
+            return false; // No tokens are at the base.
+        }
+
     }
 }

@@ -8,7 +8,7 @@ using System.IO;
 
 public static class DatabaseUtility
 {
-    private static string databasePath = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "MyDatabase.db");
+   private static string databasePath = Path.Combine(Windows.Storage.ApplicationData.Current.LocalFolder.Path, "MyDatabase.db");
 
     public static void InitializeDatabase()
     {
