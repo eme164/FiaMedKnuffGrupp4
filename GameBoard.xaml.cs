@@ -41,7 +41,7 @@ namespace FiaMedKnuffGrupp4
         private Team teamBlue = new Models.Team(Colors.Blue);
         private Teams teams = new Models.Teams();
         private int numberOfColumnsInGrid = 15;
-        private bool drawGrid = false; //For debugging purposes
+        private bool drawGrid = true; //For debugging purposes
         private float cellSize;
         public Token selectedToken;
         private int diceRollResult;
@@ -161,7 +161,7 @@ namespace FiaMedKnuffGrupp4
         {
             setCellSize();
             setCanvasMargin();
-            setDiceImageSize();
+            setDiceImageAndVictoryImageSize();
             GetActiveTeamColor();
 
             foreach (Models.Team team in teams.TeamList)
@@ -190,8 +190,8 @@ namespace FiaMedKnuffGrupp4
         {
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                canvas.Margin = new Thickness((boardGrid.ActualWidth - backgroundImage.ActualWidth) / 2, (boardGrid.ActualHeight - backgroundImage.ActualHeight) / 2,
-                                                                (boardGrid.ActualWidth - backgroundImage.ActualWidth) / 2, (boardGrid.ActualHeight - backgroundImage.ActualHeight) / 2);
+                canvas.Margin = new Thickness((boardGrid.ActualWidth - backgroundImage.ActualWidth) / 2, (boardGrid.ActualHeight - backgroundImage.ActualHeight) / 2 - (buttonArea.ActualHeight / 2),
+                                                                (boardGrid.ActualWidth - backgroundImage.ActualWidth) / 2, (boardGrid.ActualHeight - backgroundImage.ActualHeight) / 2 - (buttonArea.ActualHeight / 2));
             });
         }
 
@@ -425,13 +425,18 @@ namespace FiaMedKnuffGrupp4
                 await Task.Delay(100);  // Adjust delay as per your needs.
             }
         }
-        private async void setDiceImageSize()
+        private async void setDiceImageAndVictoryImageSize()
         {
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
                 DiceImage.Width = cellSize * 1.5;
                 DiceImage.Height = cellSize * 1.5;
+
+                victoryImage.Height = cellSize * 8;
+                victoryImage.Width = cellSize * 8;
+                contentBoarder.Width = backgroundImage.ActualWidth;
             });
+
         }
         //check if all tokens in current active team are at goal
         private bool AllTokensAtGoal()
@@ -443,6 +448,7 @@ namespace FiaMedKnuffGrupp4
                     return false;
                 }
             }
+            victoryImage.Visibility = Visibility.Visible;
             return true;
         }
         private void DisableDiceClick()

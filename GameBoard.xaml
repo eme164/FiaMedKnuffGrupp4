@@ -10,6 +10,14 @@
     mc:Ignorable="d">
 
     <Grid x:Name="boardGrid">
+        <Grid.Background>
+            <ImageBrush ImageSource="Assets/Mask group.png" Stretch="Fill" />
+        </Grid.Background>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition x:Name="buttonArea" Height="50" />
+        </Grid.RowDefinitions>
         <Image
             x:Name="backgroundImage"
             Source="/Assets/Images/Gameboard/Board.png"
@@ -29,5 +37,64 @@
             VerticalAlignment="Center"
             PointerPressed="RollDiceButton_Click"
             Source="Assets/dice_1.png" />
+        <Image
+            x:Name="victoryImage"
+            Source="/Assets/Images/Victory.png"
+            Visibility="Collapsed" />
+        <Border
+            x:Name="contentBoarder"
+            Grid.Row="1"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal">
+                <Button
+                    x:Name="StartButton"
+                    Width="100"
+                    Height="40"
+                    VerticalAlignment="Top"
+                    BorderBrush="White"
+                    BorderThickness="2"
+                    CornerRadius="10"
+                    FontSize="30">
+                    <Button.FocusVisualPrimaryBrush>
+                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                            <GradientStop Color="Black" />
+                            <GradientStop Offset="1" Color="White" />
+                        </LinearGradientBrush>
+                    </Button.FocusVisualPrimaryBrush>
+                    <Button.Background>
+                        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                            <GradientStop Offset="0.57" Color="#FFF86C00" />
+                            <GradientStop Offset="0.933" Color="#FF97530F" />
+                        </LinearGradientBrush>
+                    </Button.Background>
+                    <Button.Content>
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Menu</TextBlock>
+                    </Button.Content>
+                </Button>
+                <TextBlock
+                    Margin="25,0,0,0"
+                    FontSize="32"
+                    Foreground="White">
+                    GOAL:
+                </TextBlock>
+                <Ellipse
+                    Width="35"
+                    Height="35"
+                    Margin="10,5,5,5"
+                    Fill="red"
+                    Stroke="black"
+                    StrokeThickness="2" />
+                <Ellipse
+                    Width="35"
+                    Height="35"
+                    Margin="5"
+                    Fill="red"
+                    Stroke="black"
+                    StrokeThickness="2" />
+
+            </StackPanel>
+        </Border>
+
     </Grid>
 </Page>
