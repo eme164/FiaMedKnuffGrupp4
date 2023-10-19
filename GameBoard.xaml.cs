@@ -457,5 +457,58 @@ namespace FiaMedKnuffGrupp4
 
             return steps;
         }
+        private bool HasCurrentTeamWon()
+        {
+            Models.Team activeTeam = GetCurrentTeam();
+
+            return activeTeam.TeamTokens.All(token => token.IsAtGoal(grid));
+        }
+        private async Task PromptUsersForNextAction()
+        {
+            ContentDialog dialog = new ContentDialog
+            {
+                Title = "Game Over",
+                Content = "Your team has won! Would you like to play again or return to the main menu?",
+                PrimaryButtonText = "Play Again",
+                CloseButtonText = "Main Menu"
+            };
+
+            ContentDialogResult result = await dialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                RestartGame(); 
+            }
+            else
+            {
+                ReturnToMainMenu(); 
+            }
+        }
+        private void RestartGame()
+        {
+            // Reset the positions of all tokens to their starting positions.
+            foreach (var team in teams.TeamList)
+            {
+                foreach (var token in team.TeamTokens)
+                {
+                    token.resetToken();
+                }
+            }
+
+            // Reset game variables
+            currentActiveTeam = ActiveTeam.Red; //or 0
+            diceRollResult = 0;
+
+            // Redraw the game board.
+            canvas.Invalidate();
+        }
+
+        private void ReturnToMainMenu()
+        {
+            RestartGame();
+
+            // Navigate back to the main menu.
+            Frame.Navigate(typeof(MainPage));
+        }
     }
 }
