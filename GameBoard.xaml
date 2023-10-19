@@ -14,6 +14,7 @@
             <ImageBrush ImageSource="Assets/Mask group.png" Stretch="fill" />
         </Grid.Background>
 
+
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition x:Name="buttonArea" Width="500" />
@@ -29,6 +30,34 @@
             Draw="canvas_Draw"
             PointerPressed="canvas_PointerPressed"
             Update="canvas_Update" />
+        <Popup
+            x:Name="menuPopup"
+            Grid.Column="1"
+            Width="400"
+            Height="500"
+            VerticalAlignment="Bottom"
+            IsLightDismissEnabled="True"
+            IsOpen="False"
+            LightDismissOverlayMode="On"
+            RelativePanel.AlignHorizontalCenterWithPanel="True"
+            RelativePanel.AlignVerticalCenterWithPanel="True">
+            <Popup.ChildTransitions>
+                <TransitionCollection>
+                    <PaneThemeTransition Edge="Bottom" />
+                </TransitionCollection>
+            </Popup.ChildTransitions>
+            <StackPanel Height="{Binding ElementName=menuPopup, Path=Height}" Background="Orange">
+                <Button
+                    x:Name="restart"
+                    Width="342"
+                    Height="50"
+                    Background="White"
+                    Click="restart_Click"
+                    Content="Restart" />
+                <Button />
+            </StackPanel>
+
+        </Popup>
         <Image
             x:Name="DiceImage"
             Width="100"
@@ -56,6 +85,7 @@
                     VerticalAlignment="Top"
                     BorderBrush="White"
                     BorderThickness="2"
+                    Click="StartButton_Click"
                     CornerRadius="10"
                     FontSize="30">
                     <Button.FocusVisualPrimaryBrush>

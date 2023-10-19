@@ -317,6 +317,12 @@ namespace FiaMedKnuffGrupp4.Models
                 return false;
             }
         }
+        public bool IsAtGoal(Grid grid)
+        {
+            int currentTile = grid.GetTile(CurrentPositionRow, CurrentPositionCol);
+
+            return currentTile == 15;
+        }
         public void resetToken()
         {
             CurrentPositionCol = StartPositionCol;

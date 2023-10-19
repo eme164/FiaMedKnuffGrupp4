@@ -48,7 +48,6 @@ namespace FiaMedKnuffGrupp4
         public Token selectedToken;
         private int diceRollResult;
         CanvasDrawingSession drawingSession;
-        private int redTokensInGoal = 0;
         private enum ActiveTeam
         {
             Red,
@@ -115,6 +114,7 @@ namespace FiaMedKnuffGrupp4
         {
             this.InitializeComponent();
             InitializeGame();
+
             Debug.WriteLine("Current active team: " + currentActiveTeam);
         }
 
@@ -165,6 +165,7 @@ namespace FiaMedKnuffGrupp4
 
         private void canvas_Update(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedUpdateEventArgs args)
         {
+            
             setCellSize();
             setCanvasMargin();
             setDiceImageAndVictoryImageSize();
@@ -183,7 +184,7 @@ namespace FiaMedKnuffGrupp4
 
         private void canvas_CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args)
         {
-
+            
         }
 
         private async void setCellSize()
@@ -458,6 +459,7 @@ namespace FiaMedKnuffGrupp4
                     return false;
                 }
             }
+            PromptUsersForNextAction();
             //Not Sure if we want to use this image after a game is won
             //victoryImage.Visibility = Visibility.Visible;
             return true;
@@ -500,6 +502,60 @@ namespace FiaMedKnuffGrupp4
 
             return steps;
         }
+        private bool HasCurrentTeamWon()
+        {
+            Models.Team activeTeam = GetCurrentTeam();
+
+            return activeTeam.TeamTokens.All(token => token.IsAtGoal(grid));
+        }
+        private async void PromptUsersForNextAction()
+        {
+            ContentDialog dialog = new ContentDialog
+            {
+                Title = "Game Over",
+                Content = "Your team has won! Would you like to play again or return to the main menu?",
+                PrimaryButtonText = "Play Again",
+                CloseButtonText = "Main Menu"
+            };
+
+            ContentDialogResult result = await dialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                RestartGame(); 
+            }
+            else
+            {
+                ReturnToMainMenu(); 
+            }
+        }
+        private void RestartGame()
+        {
+            Frame.Navigate(this.GetType());
+            //// Reset the positions of all tokens to their starting positions.
+            //foreach (var team in teams.TeamList)
+            //{
+            //    foreach (var token in team.TeamTokens)
+            //    {
+            //        token.resetToken();
+            //    }
+            //}
+
+            //// Reset game variables
+            //currentActiveTeam = ActiveTeam.Red; //or 0
+            //diceRollResult = 0;
+
+            //// Redraw the game board.
+            //canvas.Invalidate();
+        }
+
+        private void ReturnToMainMenu()
+        {
+            //RestartGame();
+
+            // Navigate back to the main menu.
+            Frame.Navigate(typeof(Startmenutogame));
+        }
         private async void UpdateRedGoalsOpacity()
         {
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -518,10 +574,12 @@ namespace FiaMedKnuffGrupp4
         {
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-
+                menuPopup.Width = cellSize * 8;
+                //relativePanel.Width = backgroundImage.ActualWidth;
+                //relativePanel.Height = backgroundImage.ActualHeight;
                 int minFontSize = 12;
 
-                StartButton.Width = cellSize;  
+                StartButton.Width = cellSize * 2;  
 
                 if (StartButton.Content is TextBlock buttonContent)
                 {
@@ -546,6 +604,22 @@ namespace FiaMedKnuffGrupp4
                 }
             });
         }
+
+        private void MenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            Frame.GoBack();
+        }
+
+        private void restart_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void StartButton_Click(object sender, RoutedEventArgs e)
+        {
+            menuPopup.IsOpen = true;
+        }
     }
+    
 
 }
