@@ -24,6 +24,7 @@ using Windows.Media.Playback;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Diagnostics;
 using ColorCode.Common;
+using Windows.UI.Xaml.Shapes;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -63,16 +64,16 @@ namespace FiaMedKnuffGrupp4
         private void InitializeGame()
         {
             //Original placement of tokens
-            //teamRed.AddToken(new Token("Red1", 10, 1, Colors.Red));
-            //teamRed.AddToken(new Token("Red2", 13, 1, Colors.Red));
-            //teamRed.AddToken(new Token("Red3", 10, 4, Colors.Red));
-            //teamRed.AddToken(new Token("Red4", 13, 4, Colors.Red));
+            teamRed.AddToken(new Token("Red1", 10, 1, Colors.Red));
+            teamRed.AddToken(new Token("Red2", 13, 1, Colors.Red));
+            teamRed.AddToken(new Token("Red3", 10, 4, Colors.Red));
+            teamRed.AddToken(new Token("Red4", 13, 4, Colors.Red));
 
             //Only for testing purposes to get tokens to goal faster
-            teamRed.AddToken(new Token("Red1", 10, 7, Colors.Red));
-            teamRed.AddToken(new Token("Red2", 9, 7, Colors.Red));
-            teamRed.AddToken(new Token("Red3", 9, 7, Colors.Red));
-            teamRed.AddToken(new Token("Red4", 10, 7, Colors.Red));
+            //teamRed.AddToken(new Token("Red1", 10, 7, Colors.Red));
+            //teamRed.AddToken(new Token("Red2", 9, 7, Colors.Red));
+            //teamRed.AddToken(new Token("Red3", 9, 7, Colors.Red));
+            //teamRed.AddToken(new Token("Red4", 10, 7, Colors.Red));
 
             teamGreen.AddToken(new Token("Green1", 1, 1, Colors.Green));
             teamGreen.AddToken(new Token("Green2", 1, 4, Colors.Green));
@@ -169,6 +170,7 @@ namespace FiaMedKnuffGrupp4
             setDiceImageAndVictoryImageSize();
             GetActiveTeamColor();
             UpdateRedGoalsOpacity();
+            SetButtonAreaSize();
 
             foreach (Models.Team team in teams.TeamList)
             {
@@ -196,8 +198,10 @@ namespace FiaMedKnuffGrupp4
         {
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                canvas.Margin = new Thickness((boardGrid.ActualWidth - backgroundImage.ActualWidth) / 2, (boardGrid.ActualHeight - backgroundImage.ActualHeight) / 2 - (buttonArea.ActualHeight / 2),
-                                                                (boardGrid.ActualWidth - backgroundImage.ActualWidth) / 2, (boardGrid.ActualHeight - backgroundImage.ActualHeight) / 2 - (buttonArea.ActualHeight / 2));
+                canvas.Margin = new Thickness((boardGrid.ActualWidth - backgroundImage.ActualWidth) / 2 - (buttonArea.ActualWidth / 2),
+                                                (boardGrid.ActualHeight - backgroundImage.ActualHeight) / 2,
+                                                (boardGrid.ActualWidth - backgroundImage.ActualWidth) / 2 - (buttonArea.ActualWidth / 2),
+                                                (boardGrid.ActualHeight - backgroundImage.ActualHeight) / 2);
             });
         }
 
@@ -375,7 +379,7 @@ namespace FiaMedKnuffGrupp4
             selectedToken = null;
             PlayDiceSound();
             await RollDiceAnimation();
-            diceRollResult = random.Next(1, 3);
+            diceRollResult = random.Next(1, 7);
             DiceImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/dice_" + diceRollResult + ".png"));
             DisableDiceClick();
             if(!IsValidRoll())
@@ -440,11 +444,11 @@ namespace FiaMedKnuffGrupp4
 
                 victoryImage.Height = cellSize * 8;
                 victoryImage.Width = cellSize * 8;
-                bottomGrid.Width = backgroundImage.ActualWidth;
             });
 
         }
         //check if all tokens in current active team are at goal
+        
         private bool AllTokensAtGoal()
         {
             foreach(Token token in GetCurrentTeam().TeamTokens)
@@ -454,7 +458,8 @@ namespace FiaMedKnuffGrupp4
                     return false;
                 }
             }
-            victoryImage.Visibility = Visibility.Visible;
+            //Not Sure if we want to use this image after a game is won
+            //victoryImage.Visibility = Visibility.Visible;
             return true;
         }
         private void DisableDiceClick()
@@ -472,7 +477,7 @@ namespace FiaMedKnuffGrupp4
             int tempRow = token.CurrentPositionRow;
             int tempCol = token.CurrentPositionCol;
 
-            while (tile != 15 && steps < 100) // we add a maximum of 100 steps to prevent infinite loops in case of errors
+            while (tile != 15 && steps < 100)
             {
                 switch (tile)
                 {
@@ -504,6 +509,39 @@ namespace FiaMedKnuffGrupp4
                     if (teamRed.TeamTokens[i].isInsideGoal)
                     {
                         redTokensGoal.Children[i].Opacity = 1;
+                    }
+                }
+            });
+        }
+
+        private async void SetButtonAreaSize()
+        {
+            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+
+                int minFontSize = 12;
+
+                StartButton.Width = cellSize;  
+
+                if (StartButton.Content is TextBlock buttonContent)
+                {
+                    double desiredFontSize = cellSize / 4;
+                    buttonContent.FontSize = desiredFontSize < minFontSize ? minFontSize : desiredFontSize;
+                }
+
+                foreach (var stackPanel in new[] { redTokensGoal, greenTokensGoal, yellowTokensGoal, blueTokensGoal })
+                {
+                    foreach (Ellipse ellipse in stackPanel.Children)
+                    {
+                        ellipse.Height = cellSize / 2;
+                        ellipse.Width = cellSize / 2;
+                    }
+                }
+                foreach (var child in mainStackPanel.Children)
+                {
+                    if (child is TextBlock textBlock && textBlock.Text == "GOAL:")
+                    {
+                        textBlock.FontSize = cellSize / 2;
                     }
                 }
             });
