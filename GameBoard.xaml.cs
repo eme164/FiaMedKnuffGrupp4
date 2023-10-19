@@ -62,6 +62,11 @@ namespace FiaMedKnuffGrupp4
         //CREATING TOKENS WITH THEIR STARTING POSITIONS AND PLACING THEM IN A TEAM
         private void InitializeGame()
         {
+            // Clear tokens for each team
+            teamRed.ClearTokens();
+            teamGreen.ClearTokens();
+            teamYellow.ClearTokens();
+            teamBlue.ClearTokens();
             //Original placement of tokens
             teamRed.AddToken(new Token("Red1", 10, 1, Colors.Red));
             teamRed.AddToken(new Token("Red2", 13, 1, Colors.Red));
@@ -605,6 +610,25 @@ namespace FiaMedKnuffGrupp4
             });
         }
 
+        private void ResetGameState()
+        {
+            // Reset the position of all tokens to their original positions
+            InitializeGame();
+
+            // Reset the current active team to a random team
+            currentActiveTeam = (ActiveTeam)new Random().Next(0, 4);
+
+            // Reset other necessary game state variables
+            selectedToken = null;
+            diceRollResult = 0;
+
+            // Possibly invalidate the canvas to redraw the initial game state
+            canvas.Invalidate();
+
+            Debug.WriteLine("Game state reset. Current active team: " + currentActiveTeam);
+        }
+
+
         private void MenuButton_Click(object sender, RoutedEventArgs e)
         {
             Frame.GoBack();
@@ -612,7 +636,7 @@ namespace FiaMedKnuffGrupp4
 
         private void restart_Click(object sender, RoutedEventArgs e)
         {
-
+            ResetGameState();
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)

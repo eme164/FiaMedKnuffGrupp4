@@ -21,7 +21,10 @@ namespace FiaMedKnuffGrupp4.Models
         {
             TeamTokens.Add(token);
         }
-
+        public void ClearTokens()
+        {
+            TeamTokens.Clear();
+        }
         public void RemoveToken(Token token)
         {
             TeamTokens.Remove(token);
