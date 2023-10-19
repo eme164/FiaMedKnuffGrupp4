@@ -43,7 +43,6 @@
                                        HorizontalAlignment="Center" 
                                        FontStretch="Condensed" 
                                        FontWeight="Bold"/>
-
                         </StackPanel>
                     </DataTemplate>
                 </FlipView.ItemTemplate>
@@ -56,7 +55,7 @@
                 Margin="840,420,0,0" 
                 VerticalAlignment="Top" 
                 Height="65" 
-                Width="240" CornerRadius="10" 
+                Width="240" CornerRadius="10"
                 Background="Yellow" 
                 BorderBrush="Black"
                 Click="YellowPlayer_Click">
