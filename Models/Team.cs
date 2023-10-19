@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Media.Playback;
 using Windows.UI;
 using Windows.UI.Xaml.Controls;
 
@@ -11,12 +12,23 @@ namespace FiaMedKnuffGrupp4.Models
     public class Team { 
         public List<Token> TeamTokens { get; set; }
         public Color TeamColor { get; set; }
+        public PlayerTypeEnum PlayerType { get; set; }
 
-        public Team(Color teamcolor)
+        public Team(Color teamColor, PlayerTypeEnum playerType)
         {
             TeamTokens = new List<Token>();
-            TeamColor = teamcolor;
+            TeamColor = teamColor;
+            PlayerType = playerType;
         }
+
+        // PlayerType Enum for StartMenu & GameState.
+        public enum PlayerTypeEnum
+        {
+            User,
+            Ai,
+            // Add more player types as needed
+        }
+
         public void AddToken(Token token)
         {
             TeamTokens.Add(token);

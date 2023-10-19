@@ -23,6 +23,9 @@ using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Diagnostics;
+using static FiaMedKnuffGrupp4.Models.Team;
+using Newtonsoft.Json;
+using static FiaMedKnuffGrupp4.Startmenutogame;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -33,12 +36,57 @@ namespace FiaMedKnuffGrupp4
     /// </summary>
     public sealed partial class GameBoard : Page
     {
+        private Team.PlayerTypeEnum GreenPlayerType;
+        private Team.PlayerTypeEnum RedPlayerType;
+        private Team.PlayerTypeEnum YellowPlayerType;
+        private Team.PlayerTypeEnum BluePlayerType;
+
+
+        /// <summary>
+        /// Handles the navigation to this page and initializes game settings based on provided parameters.
+        /// </summary>
+        /// <param name="e">The navigation event arguments.</param>
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            // Call the base class method to perform standard navigation handling.
+            base.OnNavigatedTo(e);
+
+            // Check if navigation parameter is not null and is of type string.
+            if (e.Parameter != null && e.Parameter is string parameter)
+            {
+                // Deserialize the JSON parameter back to the PlayerTypeData object.
+                PlayerTypeData playerTypes = JsonConvert.DeserializeObject<PlayerTypeData>(parameter);
+
+                // Assign player types to corresponding fields based on deserialized data.
+                GreenPlayerType = playerTypes.GreenPlayerType;
+                RedPlayerType = playerTypes.RedPlayerType;
+                YellowPlayerType = playerTypes.YellowPlayerType;
+                BluePlayerType = playerTypes.BluePlayerType;
+            }
+
+            // Now that player types are set, proceed with initializing the game or any other logic.
+            teamGreen = new Models.Team(Colors.Green, GreenPlayerType);
+            teamRed = new Models.Team(Colors.Red, RedPlayerType);
+            teamYellow = new Models.Team(Colors.Yellow, YellowPlayerType);
+            teamBlue = new Models.Team(Colors.Blue, BluePlayerType);
+
+            // Initialize the game with player types and other settings.
+            InitializeGame();
+
+            // Output debugging information.
+            Debug.WriteLine($"Current active team---NAVIGATE---: " + currentActiveTeam);
+            Debug.WriteLine("Green Player Type: " + GetPlayerTypeString(teamGreen.PlayerType));
+            Debug.WriteLine("Red Player Type: " + GetPlayerTypeString(teamRed.PlayerType));
+            Debug.WriteLine("Yellow Player Type: " + GetPlayerTypeString(teamYellow.PlayerType));
+            Debug.WriteLine("Blue Player Type: " + GetPlayerTypeString(teamBlue.PlayerType));
+        }
+
         private Random random = new Random();
         private readonly Models.Grid grid = new Models.Grid();
-        private Team teamRed = new Models.Team(Colors.Red);
-        private Team teamGreen = new Models.Team(Colors.Green);
-        private Team teamYellow = new Models.Team(Colors.Yellow);
-        private Team teamBlue = new Models.Team(Colors.Blue);
+        private Team teamRed;
+        private Team teamGreen;
+        private Team teamYellow;
+        private Team teamBlue;
         private Teams teams = new Models.Teams();
         private int numberOfColumnsInGrid = 15;
         private bool drawGrid = false; //For debugging purposes
@@ -100,13 +148,23 @@ namespace FiaMedKnuffGrupp4
             return allTokens;
         }
 
+        private string GetPlayerTypeString(Team.PlayerTypeEnum playerType)
+        {
+            return playerType.ToString();
+        }
 
         public GameBoard()
         {
             this.InitializeComponent();
-            InitializeGame();
-            Debug.WriteLine("Current active team: " + currentActiveTeam);
+            /*
+            Debug.WriteLine("Current active team---GAMEBOARD---: " + currentActiveTeam);
+            Debug.WriteLine("Green Player Type: " + GetPlayerTypeString(teamGreen.PlayerType));
+            Debug.WriteLine("Red Player Type: " + GetPlayerTypeString(teamRed.PlayerType));
+            Debug.WriteLine("Yellow Player Type: " + GetPlayerTypeString(teamYellow.PlayerType));
+            Debug.WriteLine("Blue Player Type: " + GetPlayerTypeString(teamBlue.PlayerType));
+            */
         }
+
 
         //DRAWING THE BOARD AND TOKENS
         private void canvas_Draw(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedDrawEventArgs args)
