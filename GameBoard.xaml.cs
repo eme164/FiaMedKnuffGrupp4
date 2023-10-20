@@ -25,6 +25,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using System.Diagnostics;
 using ColorCode.Common;
 using Windows.UI.Xaml.Shapes;
+using Windows.System;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -62,11 +63,6 @@ namespace FiaMedKnuffGrupp4
         //CREATING TOKENS WITH THEIR STARTING POSITIONS AND PLACING THEM IN A TEAM
         private void InitializeGame()
         {
-            // Clear tokens for each team
-            teamRed.ClearTokens();
-            teamGreen.ClearTokens();
-            teamYellow.ClearTokens();
-            teamBlue.ClearTokens();
             //Original placement of tokens
             teamRed.AddToken(new Token("Red1", 10, 1, Colors.Red));
             teamRed.AddToken(new Token("Red2", 13, 1, Colors.Red));
@@ -610,8 +606,12 @@ namespace FiaMedKnuffGrupp4
         private void ResetGameState()
         {
             // Reset the position of all tokens to their original positions
-            InitializeGame();
+            foreach(Token token in AllTokens())
+            {
+                token.resetToken();
+            }
 
+            menuPopup.IsOpen = false;
             // Reset the current active team to a random team
             currentActiveTeam = (ActiveTeam)new Random().Next(0, 4);
 
@@ -621,25 +621,47 @@ namespace FiaMedKnuffGrupp4
             EnableDiceClick();
 
             // Possibly invalidate the canvas to redraw the initial game state
-            //canvas.Invalidate();
+            canvas.Invalidate();
 
             Debug.WriteLine("Game state reset. Current active team: " + currentActiveTeam);
-        }
-
-
-        private void MenuButton_Click(object sender, RoutedEventArgs e)
-        {
-            Frame.GoBack();
-        }
-
-        private void restart_Click(object sender, RoutedEventArgs e)
-        {
-            ResetGameState();
         }
 
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             menuPopup.IsOpen = true;
+        }
+
+        private void MenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            menuPopup.IsOpen = true;
+        }
+        private void ContinueButton_Click(object sender, RoutedEventArgs e)
+        {
+            menuPopup.IsOpen = false;
+        }
+        private void SaveQuitButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void QuitButton_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Exit();
+        }
+
+        //This does not work for some reason....
+        private void menuPopup_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.Escape)
+            {
+                if (menuPopup.IsOpen)
+                {
+                    menuPopup.IsOpen = false;
+                }
+                else
+                {
+                    menuPopup.IsOpen = true;
+                }
+            }
         }
     }
     
