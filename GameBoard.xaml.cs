@@ -176,7 +176,7 @@ namespace FiaMedKnuffGrupp4
             setDiceImageAndVictoryImageSize();
             GetActiveTeamColor();
             UpdateRedGoalsOpacity();
-            SetButtonAreaSize();
+            SetTokenGoalRowSizes();
 
             foreach (Models.Team team in teams.TeamList)
             {
@@ -204,10 +204,10 @@ namespace FiaMedKnuffGrupp4
         {
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                canvas.Margin = new Thickness((boardGrid.ActualWidth - backgroundImage.ActualWidth) / 2 - (buttonArea.ActualWidth / 2),
-                                                (boardGrid.ActualHeight - backgroundImage.ActualHeight) / 2,
-                                                (boardGrid.ActualWidth - backgroundImage.ActualWidth) / 2 - (buttonArea.ActualWidth / 2),
-                                                (boardGrid.ActualHeight - backgroundImage.ActualHeight) / 2);
+                canvas.Margin = new Thickness((boardGrid.ActualWidth - backgroundImage.ActualWidth) / 2,
+                                                (boardGrid.ActualHeight - backgroundImage.ActualHeight) / 2 - (mainStackPanel.ActualHeight / 2),
+                                                (boardGrid.ActualWidth - backgroundImage.ActualWidth) / 2,
+                                                (boardGrid.ActualHeight - backgroundImage.ActualHeight) / 2 - (mainStackPanel.ActualHeight / 2));
             });
         }
 
@@ -575,15 +575,12 @@ namespace FiaMedKnuffGrupp4
             });
         }
 
-        private async void SetButtonAreaSize()
+        private async void SetTokenGoalRowSizes()
         {
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                menuPopup.Width = cellSize * 8;
-                //relativePanel.Width = backgroundImage.ActualWidth;
-                //relativePanel.Height = backgroundImage.ActualHeight;
                 int minFontSize = 12;
-
+                mainStackPanel.Width = backgroundImage.ActualWidth;
                 StartButton.Width = cellSize * 2;  
 
                 if (StartButton.Content is TextBlock buttonContent)
@@ -621,9 +618,10 @@ namespace FiaMedKnuffGrupp4
             // Reset other necessary game state variables
             selectedToken = null;
             diceRollResult = 0;
+            EnableDiceClick();
 
             // Possibly invalidate the canvas to redraw the initial game state
-            canvas.Invalidate();
+            //canvas.Invalidate();
 
             Debug.WriteLine("Game state reset. Current active team: " + currentActiveTeam);
         }
