@@ -11,6 +11,7 @@ namespace FiaMedKnuffGrupp4.Models
     public class Team { 
         public List<Token> TeamTokens { get; set; }
         public Color TeamColor { get; set; }
+        public bool AI = false;
 
         public Team(Color teamcolor)
         {

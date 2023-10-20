@@ -89,6 +89,8 @@ namespace FiaMedKnuffGrupp4
             teamBlue.AddToken(new Token("Blue2", 10, 13, Colors.Blue));
             teamBlue.AddToken(new Token("Blue3", 13, 10, Colors.Blue));
             teamBlue.AddToken(new Token("Blue4", 13, 13, Colors.Blue));
+            teamBlue.AI = true;
+            teamYellow.AI = true;
 
             // Add teams to the Teams collection
             teams.AddTeam(teamRed);
@@ -343,15 +345,31 @@ namespace FiaMedKnuffGrupp4
                 {
                     case ActiveTeam.Red:
                         currentActiveTeam = ActiveTeam.Green;
+                        if(teamGreen.AI)
+                        {
+                            CpuPlayerRollDice();
+                        }
                         break;
                     case ActiveTeam.Green:
                         currentActiveTeam = ActiveTeam.Yellow;
+                        if (teamYellow.AI)
+                        {
+                            CpuPlayerRollDice();
+                        }
                         break;
                     case ActiveTeam.Yellow:
                         currentActiveTeam = ActiveTeam.Blue;
+                        if (teamBlue.AI)
+                        {
+                            CpuPlayerRollDice();
+                        }
                         break;
                     case ActiveTeam.Blue:
                         currentActiveTeam = ActiveTeam.Red;
+                        if (teamRed.AI)
+                        {
+                            CpuPlayerRollDice();
+                        }
                         break;
                 }
 
@@ -397,6 +415,20 @@ namespace FiaMedKnuffGrupp4
                 {
                     // If a six was rolled, notify the player with your new method.
                     NotifyPlayerForSix();
+                    if(GetCurrentTeam().AI)
+                    {
+                        CpuPlayerPickToken();
+                        CpuPlayerRollDice();
+                    }
+                    
+                    
+                }
+                else
+                {
+                    if(GetCurrentTeam().AI)
+                    {
+                        CpuPlayerPickToken();
+                    }
                 }
             }
             Debug.WriteLine("Current active team: " + currentActiveTeam);
@@ -404,19 +436,23 @@ namespace FiaMedKnuffGrupp4
 
         private async void NotifyPlayerForSix()
         {
-            // Play the sound for rolling a six
-            mediaPlayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/noftication_roll6.mp3")); 
-            mediaPlayer.Play();
-
-            // Notify the player with a dialog (or another UI element)
-            ContentDialog rollSixDialog = new ContentDialog
+            if (!GetCurrentTeam().AI)
             {
-                Title = "Great Roll" + " " + currentActiveTeam + "!",
-                Content = "You rolled a six! You get another turn.",
-                CloseButtonText = "Awesome!"
-            };
 
-            await rollSixDialog.ShowAsync();
+                // Play the sound for rolling a six
+                mediaPlayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/noftication_roll6.mp3")); 
+                mediaPlayer.Play();
+
+                // Notify the player with a dialog (or another UI element)
+                ContentDialog rollSixDialog = new ContentDialog
+                {
+                    Title = "Great Roll" + " " + currentActiveTeam + "!",
+                    Content = "You rolled a six! You get another turn.",
+                    CloseButtonText = "Awesome!"
+                };
+
+                await rollSixDialog.ShowAsync();
+            }
         }
 
 
@@ -662,6 +698,37 @@ namespace FiaMedKnuffGrupp4
                     menuPopup.IsOpen = true;
                 }
             }
+        }
+
+        private void CpuPlayerRollDice()
+        {
+            Debug.WriteLine("CPU turn");
+            RollDiceButton_Click(this,null);
+            Debug.WriteLine("Dice roll: " + diceRollResult);
+
+        }
+
+        private void CpuPlayerPickToken() 
+        {   
+            if(diceRollResult == 6)
+            {
+                selectedToken = GetCurrentTeam().TeamTokens[new Random().Next(0, 4)];
+            }
+            else
+            {
+                List<Token> tokensNotInBase = new List<Token>();
+                foreach (Token token in GetCurrentTeam().TeamTokens)
+                {
+                    if (!token.isAtBase(grid))
+                    {
+                        tokensNotInBase.Add(token);
+                    }
+                }
+                selectedToken = tokensNotInBase[new Random().Next(0, tokensNotInBase.Count)];
+            }
+            selectedToken.MoveToken(selectedToken, diceRollResult, grid, AllTokens());
+            SwitchToNextTeam();
+            EnableDiceClick();
         }
     }
     
