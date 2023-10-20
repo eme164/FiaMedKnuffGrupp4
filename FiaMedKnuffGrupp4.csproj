@@ -119,14 +119,24 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="db.cs" />
     <Compile Include="GameBoard.xaml.cs">
       <DependentUpon>GameBoard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DiceAnimation.xaml.cs">
+      <DependentUpon>DiceAnimation.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\Grid.cs" />
+    <Compile Include="Models\Team.cs" />
+    <Compile Include="Models\Teams.cs" />
+    <Compile Include="Models\Token.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startmenutogame.xaml.cs">
+      <DependentUpon>Startmenutogame.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -135,6 +145,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\Images\Gameboard\Board.png" />
+    <Content Include="Assets\dice_1.png" />
+    <Content Include="Assets\dice_2.png" />
+    <Content Include="Assets\dice_3.png" />
+    <Content Include="Assets\dice_4.png" />
+    <Content Include="Assets\dice_5.png" />
+    <Content Include="Assets\dice_6.png" />
+    <Content Include="Assets\dice_roll.mp3" />
+    <Content Include="Assets\LUDO.png" />
+    <Content Include="Assets\Mask group.png" />
+    <Content Include="Assets\noftication_roll6.mp3" />
     <Content Include="Assets\LUDO.svg" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
@@ -154,14 +174,28 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="DiceAnimation.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Startmenutogame.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite">
+      <Version>7.0.12</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.14</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
     </PackageReference>
     <PackageReference Include="Win2D.uwp">
       <Version>1.27.0</Version>
