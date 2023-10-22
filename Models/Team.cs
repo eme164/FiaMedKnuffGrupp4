@@ -8,11 +8,18 @@ using Windows.UI.Xaml.Controls;
 
 namespace FiaMedKnuffGrupp4.Models
 {
+    /// <summary>
+    /// Represents a team of tokens.
+    /// </summary>
     public class Team { 
         public List<Token> TeamTokens { get; set; }
         public Color TeamColor { get; set; }
         public bool AI = false;
 
+        /// <summary>
+        /// Constructor for the team class
+        /// </summary>
+        /// <param name="teamcolor"></param>
         public Team(Color teamcolor)
         {
             TeamTokens = new List<Token>();
