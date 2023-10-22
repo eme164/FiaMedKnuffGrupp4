@@ -796,8 +796,9 @@ namespace FiaMedKnuffGrupp4
         /// <summary>
         /// This method is used to simulate a CPU player rolling the dice.
         /// </summary>
-        private void CpuPlayerRollDice()
+        private async void CpuPlayerRollDice()
         {
+            await Task.Delay(2000);
             Debug.WriteLine("CPU turn");
             RollDiceButton_Click(this,null);
             Debug.WriteLine("Dice roll: " + diceRollResult);
@@ -807,8 +808,10 @@ namespace FiaMedKnuffGrupp4
         /// <summary>
         /// This method is used to simulate a CPU player picking a token and moving it.
         /// </summary>
-        private void CpuPlayerPickToken() 
+        /// TODO: Check so that you can't walk into goal unless you rolled the exact amount of steps needed to reach goal.
+        private async void CpuPlayerPickToken() 
         {   
+            await Task.Delay(2000);
             if(diceRollResult == 6)
             {
                 selectedToken = GetCurrentTeam().TeamTokens[new Random().Next(0, 4)];
