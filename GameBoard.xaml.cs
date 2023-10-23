@@ -92,6 +92,8 @@ namespace FiaMedKnuffGrupp4
             teamBlue.AddToken(new Token("Blue2", 10, 13, Colors.Blue));
             teamBlue.AddToken(new Token("Blue3", 13, 10, Colors.Blue));
             teamBlue.AddToken(new Token("Blue4", 13, 13, Colors.Blue));
+
+            //change this depending on how many CPU opponents you want
             teamBlue.AI = true;
             teamYellow.AI = true;
             teamGreen.AI = true;
