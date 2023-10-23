@@ -94,9 +94,9 @@ namespace FiaMedKnuffGrupp4
             teamBlue.AddToken(new Token("Blue4", 13, 13, Colors.Blue));
 
             //change this depending on how many CPU opponents you want
-            teamBlue.AI = true;
-            teamYellow.AI = true;
-            teamGreen.AI = true;
+            //teamBlue.AI = true;
+            //teamYellow.AI = true;
+            //teamGreen.AI = true;
 
             // Add teams to the Teams collection
             teams.AddTeam(teamRed);
@@ -129,6 +129,12 @@ namespace FiaMedKnuffGrupp4
                 CpuPlayerRollDice();
             }
             Debug.WriteLine("Current active team: " + currentActiveTeam);
+        }
+
+        //Return user type from startmenutogame.xaml
+        private bool IsUserTypeCpu()
+        {
+            return (bool)Application.ReferenceEquals(typeof(Startmenutogame), "Cpu");
         }
 
         //DRAWING THE BOARD AND TOKENS
@@ -840,6 +846,27 @@ namespace FiaMedKnuffGrupp4
             SwitchToNextTeam();
             Debug.WriteLine("Current active team: " + currentActiveTeam);
             EnableDiceClick();
+        }
+
+        /// <summary>
+        /// Gathers the user selections from the start menu and sets the AI property of the teams.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            if (e.Parameter is Dictionary<string, string> userSelections)
+            {
+                teamGreen.AI = userSelections["Green"] == "Ai";
+                teamRed.AI = userSelections["Red"] == "Ai";
+                teamYellow.AI = userSelections["Yellow"] == "Ai";
+                teamBlue.AI = userSelections["Blue"] == "Ai";
+                
+                Debug.WriteLine("Green: " + teamGreen.AI);
+                Debug.WriteLine("Red: " + teamRed.AI);
+                Debug.WriteLine("Yellow: " + teamYellow.AI);
+                Debug.WriteLine("Blue: " + teamBlue.AI);
+            }
         }
     }
     

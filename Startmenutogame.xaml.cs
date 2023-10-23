@@ -22,6 +22,7 @@ namespace FiaMedKnuffGrupp4
     /// </summary>
     public sealed partial class Startmenutogame : Page
     {
+
         public Startmenutogame()
         {
             this.InitializeComponent();
@@ -30,7 +31,8 @@ namespace FiaMedKnuffGrupp4
         private void Button_Start(object sender, RoutedEventArgs e)
         {
             //show the GameBoard page
-            this.Frame.Navigate(typeof(GameBoard));
+            var userSelections = GetUserSelections();
+            Frame.Navigate(typeof(GameBoard), userSelections);
         }
 
         private void Button_Continue(object sender, RoutedEventArgs e)
@@ -47,5 +49,19 @@ namespace FiaMedKnuffGrupp4
         {
 
         }
+
+        private Dictionary<string, string> GetUserSelections()
+        {
+            var selections = new Dictionary<string, string>
+            {
+                {"Green", flipView1.SelectedItem.ToString()},
+                {"Yellow", flipView2.SelectedItem.ToString()},
+                {"Red", flipView3.SelectedItem.ToString()},
+                {"Blue", flipView4.SelectedItem.ToString()}
+            };
+
+            return selections;
+        }
+
     }
 }
