@@ -10,7 +10,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
+    <Grid Height="1000" Width="1500">
 
         <Grid.Background>
             <ImageBrush Stretch="Fill" ImageSource="Assets/Mask group.png"/>
@@ -135,14 +135,14 @@
         <Button x:Name="StartButton"
             Width="300"
             Height="80"
-            Margin="1025,825,0,0"
-            VerticalAlignment="Top"
+            Margin="0,0,145,136"
+            VerticalAlignment="Bottom"
             BorderBrush="White"
             FontSize="60"
             BorderThickness="2"
             CornerRadius="10"
 
-            Click="Button_Start" Drop="StartButton_Drop">
+            Click="Button_Start" Drop="StartButton_Drop" HorizontalAlignment="Right">
             <Button.FocusVisualPrimaryBrush>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="Black"/>
@@ -163,8 +163,8 @@
         <Button x:Name="ContinueButton"
         Width="300"
         Height="80"
-        Margin="190,825,0,0"
-        VerticalAlignment="Top"
+        Margin="190,0,0,140"
+        VerticalAlignment="Bottom"
         BorderBrush="White"
         FontSize="60"
         BorderThickness="2"

@@ -12,7 +12,9 @@ using Windows.UI;
 using Windows.UI.Xaml.Controls;
 
 namespace FiaMedKnuffGrupp4.Models
-{
+{   /// <summary>
+    /// Represents a token.
+    /// </summary>
     public class Token
     {
         public string TokenID { get; set; }
@@ -29,8 +31,15 @@ namespace FiaMedKnuffGrupp4.Models
         public float Scale { get; set; } = 1.0f;
         private readonly int StartPositionRow;
         private readonly int StartPositionCol;
+        public bool isInsideGoal { get; private set; }
 
-
+        /// <summary>
+        /// Constructor for Token
+        /// </summary>
+        /// <param name="tokenID"></param>
+        /// <param name="currentPositionRow"></param>
+        /// <param name="currentPositionCol"></param>
+        /// <param name="tokenColor"></param>
         public Token(string tokenID, int currentPositionRow, int currentPositionCol, Color tokenColor)
         {
             TokenID = tokenID;
@@ -41,21 +50,21 @@ namespace FiaMedKnuffGrupp4.Models
             AnimatedY = currentPositionRow;
             StartPositionCol = currentPositionCol;
             StartPositionRow = currentPositionRow;
+            isInsideGoal = false;
         }
 
+        /// <summary>
+        /// This method moves the token based on the dice roll result.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="diceRollResult"></param>
+        /// <param name="grid"></param>
+        /// <param name="allTokens"></param>
         public void MoveToken(Token token, int diceRollResult, Grid grid, List<Token> allTokens)
         {
             bool canContinueMoving = true;
             int tile = grid.GetTile(CurrentPositionRow, CurrentPositionCol);
             int stepsRequired = StepsToGoal(token, grid);
-
-            //THIS DOES NOT WORK HOW I WANT IT TO WORK AT THE MOMENT
-            //if (diceRollResult > stepsRequired)
-            //{
-            //    //TODO: Decide what should happen if the dice roll result is higher than the steps required to reach the goal.
-            //    Debug.WriteLine("You rolled too high!");
-                
-            //}
 
             if (diceRollResult == 6 && tile == 0)
             {
@@ -164,12 +173,16 @@ namespace FiaMedKnuffGrupp4.Models
                         }
                     case 15: //TODO: Decide what should happen to the token who reached the goal.
                         canContinueMoving = false;
-                        Debug.WriteLine("You have reached the goal!");
                         break;
 
                 }
 
                 tile = grid.GetTile(tempRow, tempCol);
+                if(tile == 15)
+                {
+                    isInsideGoal = true;
+                    Debug.WriteLine("You have reached the goal!");
+                }
 
                 var tokensAtNextPosition = allTokens.Where(t =>
                    t.CurrentPositionRow == tempRow &&
@@ -208,6 +221,12 @@ namespace FiaMedKnuffGrupp4.Models
             IsAnimating = true;
 
         }
+        /// <summary>
+        /// Checks if the token collides with another token
+        /// Used to make the other token return to base
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
         public bool CollidesWith(Token other)
         {
             // Check if they are at the same position and have different colors.
@@ -215,6 +234,12 @@ namespace FiaMedKnuffGrupp4.Models
                    this.CurrentPositionCol == other.CurrentPositionCol &&
                    this.TokenColor != other.TokenColor;
         }
+
+        /// <summary>
+        /// This method updates the animation of the token.
+        /// EaseInOutQuad is used to make the animation smoother.
+        /// Scale is used to make the token grow and shrink during the animation.
+        /// </summary>
         public void UpdateAnimation()
         {
             if (!IsAnimating) return;
@@ -253,7 +278,16 @@ namespace FiaMedKnuffGrupp4.Models
             }
         }
 
-        //draw token using win2d DrawingSession
+        /// <summary>
+        /// This method draws the token.
+        /// if there are two tokens of the same color on the same tile, one of them will be drawn slightly offset.
+        /// cellSize is used to determine the size of the token.
+        /// tokenAtSamePosition is used to determine if there are two tokens of the same color on the same tile.
+        /// </summary>
+        /// <param name="drawingSession"></param>
+        /// <param name="cellSize"></param>
+        /// <param name="isSelected"></param>
+        /// <param name="allTokens"></param>
         public void DrawToken(CanvasDrawingSession drawingSession, float cellSize, bool isSelected, List<Token> allTokens)
         {
             // Calculate the token's position based on its current animated position.
@@ -291,14 +325,28 @@ namespace FiaMedKnuffGrupp4.Models
             // Draw the token with the adjusted size and animated position.
             drawingSession.FillCircle(tokenX, tokenY, adjustedSize / 3, tokenColor);
         }
+
+        /// <summary>
+        /// This method returns the current column the token is positioned in.
+        /// </summary>
+        /// <returns>Current column</returns>
         public int getCurrentPositionCol()
         {
             return CurrentPositionCol;
         }
+        /// <summary>
+        /// This method returns the current row the token is positioned in.
+        /// </summary>
+        /// <returns>Current Row</returns>
         public int getCurrentPositionRow()
         {
             return CurrentPositionRow;
         }
+        /// <summary>
+        /// Uses the grid to check if the token is at the base
+        /// </summary>
+        /// <param name="grid"></param>
+        /// <returns>True if the cell/tile is 0</returns>
         public bool isAtBase(Grid grid)
         {
             int tile = grid.GetTile(CurrentPositionRow, CurrentPositionCol);
@@ -311,6 +359,22 @@ namespace FiaMedKnuffGrupp4.Models
                 return false;
             }
         }
+
+        /// <summary>
+        /// Checks if the token is at the goal
+        /// </summary>
+        /// <param name="grid"></param>
+        /// <returns>True if the tile/cell is of value 15</returns>
+        public bool IsAtGoal(Grid grid)
+        {
+            int currentTile = grid.GetTile(CurrentPositionRow, CurrentPositionCol);
+
+            return currentTile == 15;
+        }
+
+        /// <summary>
+        /// Resets the token to its starting position
+        /// </summary>
         public void resetToken()
         {
             CurrentPositionCol = StartPositionCol;
@@ -322,6 +386,13 @@ namespace FiaMedKnuffGrupp4.Models
             startTime = DateTime.Now;
             IsAnimating = true;
         }
+        /// <summary>
+        /// Checks how many steps the token has to take to reach the goal
+        /// Used to determine if the token can move or not
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="grid"></param>
+        /// <returns>Number of steps(int) away from the goal</returns>
         public int StepsToGoal(Token token, Grid grid)
         {
             int steps = 0;

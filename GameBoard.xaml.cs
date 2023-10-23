@@ -23,9 +23,9 @@ using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Diagnostics;
-using static FiaMedKnuffGrupp4.Models.Team;
-using Newtonsoft.Json;
-using static FiaMedKnuffGrupp4.Startmenutogame;
+using ColorCode.Common;
+using Windows.UI.Xaml.Shapes;
+using Windows.System;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -89,7 +89,7 @@ namespace FiaMedKnuffGrupp4
         private Team teamBlue;
         private Teams teams = new Models.Teams();
         private int numberOfColumnsInGrid = 15;
-        private bool drawGrid = false; //For debugging purposes
+        private bool drawGrid = true; //For debugging purposes
         private float cellSize;
         public Token selectedToken;
         private int diceRollResult;
@@ -106,12 +106,22 @@ namespace FiaMedKnuffGrupp4
 
         // Game initialization
         //CREATING TOKENS WITH THEIR STARTING POSITIONS AND PLACING THEM IN A TEAM
+        /// <summary>
+        /// This method initializes the game by creating tokens and placing them in their starting positions.
+        /// </summary>
         private void InitializeGame()
         {
+            //Original placement of tokens
             teamRed.AddToken(new Token("Red1", 10, 1, Colors.Red));
             teamRed.AddToken(new Token("Red2", 13, 1, Colors.Red));
             teamRed.AddToken(new Token("Red3", 10, 4, Colors.Red));
             teamRed.AddToken(new Token("Red4", 13, 4, Colors.Red));
+
+            //Only for testing purposes to get tokens to goal faster
+            //teamRed.AddToken(new Token("Red1", 10, 7, Colors.Red));
+            //teamRed.AddToken(new Token("Red2", 9, 7, Colors.Red));
+            //teamRed.AddToken(new Token("Red3", 9, 7, Colors.Red));
+            //teamRed.AddToken(new Token("Red4", 10, 7, Colors.Red));
 
             teamGreen.AddToken(new Token("Green1", 1, 1, Colors.Green));
             teamGreen.AddToken(new Token("Green2", 1, 4, Colors.Green));
@@ -127,6 +137,11 @@ namespace FiaMedKnuffGrupp4
             teamBlue.AddToken(new Token("Blue2", 10, 13, Colors.Blue));
             teamBlue.AddToken(new Token("Blue3", 13, 10, Colors.Blue));
             teamBlue.AddToken(new Token("Blue4", 13, 13, Colors.Blue));
+
+            //change this depending on how many CPU opponents you want
+            //teamBlue.AI = true;
+            //teamYellow.AI = true;
+            //teamGreen.AI = true;
 
             // Add teams to the Teams collection
             teams.AddTeam(teamRed);
@@ -156,17 +171,27 @@ namespace FiaMedKnuffGrupp4
         public GameBoard()
         {
             this.InitializeComponent();
-            /*
-            Debug.WriteLine("Current active team---GAMEBOARD---: " + currentActiveTeam);
-            Debug.WriteLine("Green Player Type: " + GetPlayerTypeString(teamGreen.PlayerType));
-            Debug.WriteLine("Red Player Type: " + GetPlayerTypeString(teamRed.PlayerType));
-            Debug.WriteLine("Yellow Player Type: " + GetPlayerTypeString(teamYellow.PlayerType));
-            Debug.WriteLine("Blue Player Type: " + GetPlayerTypeString(teamBlue.PlayerType));
-            */
+            InitializeGame();
+
+            if (GetCurrentTeam().AI)
+            {
+                CpuPlayerRollDice();
+            }
+            Debug.WriteLine("Current active team: " + currentActiveTeam);
         }
 
+        //Return user type from startmenutogame.xaml
+        private bool IsUserTypeCpu()
+        {
+            return (bool)Application.ReferenceEquals(typeof(Startmenutogame), "Cpu");
+        }
 
         //DRAWING THE BOARD AND TOKENS
+        /// <summary>
+        /// Used to draw the game board and tokens.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void canvas_Draw(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedDrawEventArgs args)
         {
             drawingSession = args.DrawingSession;
@@ -176,6 +201,8 @@ namespace FiaMedKnuffGrupp4
             {
                 FontSize = fontSize
             };
+
+            
 
             // Loop through all cells and draw a black outline with coordinates inside each cell.
             if (drawGrid)
@@ -200,17 +227,29 @@ namespace FiaMedKnuffGrupp4
             {
                 foreach (Token token in team.TeamTokens)
                 {
-                    token.DrawToken(drawingSession, cellSize, token == selectedToken, AllTokens());
+                    if (!token.isInsideGoal)
+                    {
+                        token.DrawToken(drawingSession, cellSize, token == selectedToken, AllTokens());
+                    }
                 }
             }
+            
         }
 
+        /// <summary>
+        /// Use this method to update the game state and perform any necessary calculations.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void canvas_Update(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedUpdateEventArgs args)
         {
+            
             setCellSize();
             setCanvasMargin();
             setDiceImageSize();
             GetActiveTeamColor();
+            UpdateTokensGoalsOpacity();
+            SetTokenGoalRowSizes();
 
             foreach (Models.Team team in teams.TeamList)
             {
@@ -219,13 +258,22 @@ namespace FiaMedKnuffGrupp4
                     token.UpdateAnimation();
                 }
             }
+
         }
 
+        /// <summary>
+        /// Use this method to create any resources that will be used in the game.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private void canvas_CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args)
         {
-
+            
         }
 
+        /// <summary>
+        /// Set the cell size based on the height of the background image and the number of columns in the grid
+        /// </summary>
         private async void setCellSize()
         {
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -234,15 +282,26 @@ namespace FiaMedKnuffGrupp4
             });
         }
 
+        /// <summary>
+        /// This method sets the margin of the canvas so that centers the grid over the background image(game board).
+        /// </summary>
         private async void setCanvasMargin()
         {
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                canvas.Margin = new Thickness((boardGrid.ActualWidth - backgroundImage.ActualWidth) / 2, (boardGrid.ActualHeight - backgroundImage.ActualHeight) / 2,
-                                                                (boardGrid.ActualWidth - backgroundImage.ActualWidth) / 2, (boardGrid.ActualHeight - backgroundImage.ActualHeight) / 2);
+                canvas.Margin = new Thickness((boardGrid.ActualWidth - backgroundImage.ActualWidth) / 2,
+                                                (boardGrid.ActualHeight - backgroundImage.ActualHeight) / 2 - (mainStackPanel.ActualHeight / 2),
+                                                (boardGrid.ActualWidth - backgroundImage.ActualWidth) / 2,
+                                                (boardGrid.ActualHeight - backgroundImage.ActualHeight) / 2 - (mainStackPanel.ActualHeight / 2));
             });
         }
 
+        /// <summary>
+        /// Checks if the pointer is inside a token and if the token can be moved.
+        /// Also checks if the token is at base and if the dice roll result is 6.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void canvas_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             if (diceRollResult == 0)
@@ -290,6 +349,10 @@ namespace FiaMedKnuffGrupp4
             {
                 selectedToken.MoveToken(selectedToken, diceRollResult, grid, AllTokens());
                 canvas.Invalidate();
+                if(AllTokensAtGoal())
+                {
+                    Debug.WriteLine("All tokens at goal");
+                }
                 SwitchToNextTeam();
                 Debug.WriteLine("Current active team: " + currentActiveTeam);
                 diceRollResult = 0;
@@ -309,6 +372,12 @@ namespace FiaMedKnuffGrupp4
             }
         }
 
+        /// <summary>
+        /// Returns true if the pointer is inside the bounds of the token, otherwise returns false.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <param name="pointerPosition"></param>
+        /// <returns></returns>
         private bool IsPointerInsideToken(Token token, Point pointerPosition)
         {
             // Implement logic to check if the pointer is inside the bounds of the token.
@@ -327,6 +396,10 @@ namespace FiaMedKnuffGrupp4
             }
         }
 
+        /// <summary>
+        /// Returns true if the current roll is valid, otherwise returns false.
+        /// </summary>
+        /// <returns></returns>
         private bool IsValidRoll()
         {
             Models.Team activeTeam = GetCurrentTeam();
@@ -349,6 +422,11 @@ namespace FiaMedKnuffGrupp4
             return false;
         }
 
+        /// <summary>
+        /// Returns the current active team.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         private Models.Team GetCurrentTeam()
         {
             switch (currentActiveTeam)
@@ -367,6 +445,9 @@ namespace FiaMedKnuffGrupp4
         }
 
         //Call this method to switch to the next team.
+        /// <summary>
+        /// Switches to the next team based on the current active team.
+        /// </summary>
         private void SwitchToNextTeam()
         {
             if(diceRollResult != 6)
@@ -375,20 +456,41 @@ namespace FiaMedKnuffGrupp4
                 {
                     case ActiveTeam.Red:
                         currentActiveTeam = ActiveTeam.Green;
+                        if(teamGreen.AI)
+                        {
+                            CpuPlayerRollDice();
+                        }
                         break;
                     case ActiveTeam.Green:
                         currentActiveTeam = ActiveTeam.Yellow;
+                        if (teamYellow.AI)
+                        {
+                            CpuPlayerRollDice();
+                        }
                         break;
                     case ActiveTeam.Yellow:
                         currentActiveTeam = ActiveTeam.Blue;
+                        if (teamBlue.AI)
+                        {
+                            CpuPlayerRollDice();
+                        }
                         break;
                     case ActiveTeam.Blue:
                         currentActiveTeam = ActiveTeam.Red;
+                        if (teamRed.AI)
+                        {
+                            CpuPlayerRollDice();
+                        }
                         break;
                 }
 
             }
         }
+
+        /// <summary>
+        /// Gets the color of the current active team.
+        /// </summary>
+        /// <returns>The color of the current active team</returns>
         private Color GetActiveTeamColor()
         {
             switch (currentActiveTeam)
@@ -407,7 +509,12 @@ namespace FiaMedKnuffGrupp4
         }
 
 
-
+        /// <summary>
+        /// Button event handler for the roll dice button.
+        /// Disable the dice button when it's clicked and enable it again after a token has been moved
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void RollDiceButton_Click(object sender, RoutedEventArgs e)
         {
             selectedToken = null;
@@ -429,28 +536,48 @@ namespace FiaMedKnuffGrupp4
                 {
                     // If a six was rolled, notify the player with your new method.
                     NotifyPlayerForSix();
+                    if(GetCurrentTeam().AI)
+                    {
+                        CpuPlayerPickToken();
+                        CpuPlayerRollDice();
+                    }
+                    
+                    
+                }
+                else
+                {
+                    if(GetCurrentTeam().AI)
+                    {
+                        CpuPlayerPickToken();
+                    }
                 }
             }
             Debug.WriteLine("Current active team: " + currentActiveTeam);
         }
 
+        /// <summary>
+        /// Notifies the player that they rolled a six.
+        /// </summary>
         private async void NotifyPlayerForSix()
         {
-            // Play the sound for rolling a six
-            mediaPlayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/noftication_roll6.mp3")); 
-            mediaPlayer.Play();
-
-            // Notify the player with a dialog (or another UI element)
-            ContentDialog rollSixDialog = new ContentDialog
+            if (!GetCurrentTeam().AI)
             {
-                Title = "Great Roll" + " " + currentActiveTeam + "!",
-                Content = "You rolled a six! You get another turn.",
-                CloseButtonText = "Awesome!"
-            };
 
-            await rollSixDialog.ShowAsync();
+                // Play the sound for rolling a six
+                mediaPlayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/noftication_roll6.mp3")); 
+                mediaPlayer.Play();
+
+                // Notify the player with a dialog (or another UI element)
+                ContentDialog rollSixDialog = new ContentDialog
+                {
+                    Title = "Great Roll" + " " + currentActiveTeam + "!",
+                    Content = "You rolled a six! You get another turn.",
+                    CloseButtonText = "Awesome!"
+                };
+
+                await rollSixDialog.ShowAsync();
+            }
         }
-
 
         private MediaPlayer mediaPlayer = new MediaPlayer();
         private void PlayDiceSound()
@@ -459,7 +586,9 @@ namespace FiaMedKnuffGrupp4
             mediaPlayer.Play();
         }
 
-
+        /// <summary>
+        /// Changes the dice image at a set interval to create an animation.
+        /// </summary>
         private async Task RollDiceAnimation()
         {
             string[] diceImages = { "dice_1.png", "dice_2.png", "dice_3.png", "dice_4.png", "dice_5.png", "dice_6.png" };
@@ -469,6 +598,10 @@ namespace FiaMedKnuffGrupp4
                 await Task.Delay(100);  // Adjust delay as per your needs.
             }
         }
+
+        /// <summary>
+        /// Sets the size of the dice image and victory image.
+        /// </summary>
         private async void setDiceImageSize()
         {
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -476,15 +609,44 @@ namespace FiaMedKnuffGrupp4
                 DiceImage.Width = cellSize * 1.5;
                 DiceImage.Height = cellSize * 1.5;
             });
+
         }
+        //check if all tokens in current active team are at goal
+        /// <summary>
+        /// Check to see if all tokens in the current active team are at goal.
+        /// </summary>
+        /// <returns>True if all tokens of the current team is at goal, otherwise returns False</returns>
+        private bool AllTokensAtGoal()
+        {
+            foreach(Token token in GetCurrentTeam().TeamTokens)
+            {
+                if (!token.isInsideGoal)
+                {
+                    return false;
+                }
+            }
+            PromptUsersForNextAction();
+            //Not Sure if we want to use this image after a game is won
+            //victoryImage.Visibility = Visibility.Visible;
+            return true;
+        }
+
+
         private void DisableDiceClick()
         {
             DiceImage.IsHitTestVisible = false;
         }
+
         private void EnableDiceClick()
         {
             DiceImage.IsHitTestVisible = true;
         }
+
+        /// <summary>
+        /// Cheks how many steps a token has to take to reach the goal to determine if a move towards the goal is valid.
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns>amount of steps left to reach the goal</returns>
         public int StepsToGoal(Token token)
         {
             int steps = 0;
@@ -492,7 +654,7 @@ namespace FiaMedKnuffGrupp4
             int tempRow = token.CurrentPositionRow;
             int tempCol = token.CurrentPositionCol;
 
-            while (tile != 15 && steps < 100) // we add a maximum of 100 steps to prevent infinite loops in case of errors
+            while (tile != 15 && steps < 100)
             {
                 switch (tile)
                 {
@@ -515,5 +677,247 @@ namespace FiaMedKnuffGrupp4
 
             return steps;
         }
+
+        /// <summary>
+        /// Checks if the current team has won the game.
+        /// </summary>
+        private bool HasCurrentTeamWon()
+        {
+            Models.Team activeTeam = GetCurrentTeam();
+
+            return activeTeam.TeamTokens.All(token => token.IsAtGoal(grid));
+        }
+
+        /// <summary>
+        /// Prompts the user to choose whether they want to play again or return to the main menu.
+        /// </summary>
+        private async void PromptUsersForNextAction()
+        {
+            ContentDialog dialog = new ContentDialog
+            {
+                Title = "Game Over",
+                Content = "Your team has won! Would you like to play again or return to the main menu?",
+                PrimaryButtonText = "Play Again",
+                CloseButtonText = "Main Menu"
+            };
+
+            ContentDialogResult result = await dialog.ShowAsync();
+
+            if (result == ContentDialogResult.Primary)
+            {
+                ResetGameState(); 
+            }
+            else
+            {
+                ReturnToMainMenu(); 
+            }
+        }
+
+        /// <summary>
+        /// Navigate back to the main menu.
+        /// </summary>
+        private void ReturnToMainMenu()
+        {
+            //RestartGame();
+
+            // Navigate back to the main menu.
+            Frame.Navigate(typeof(Startmenutogame));
+        }
+
+        /// <summary>
+        /// Changes the opacity of the Tokens in the goal to 1 if they are inside the goal.
+        /// </summary>
+        private async void UpdateTokensGoalsOpacity()
+        {
+            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                for(int i = 0; i < 4; i++)
+                {
+                    if (teamRed.TeamTokens[i].isInsideGoal)
+                    {
+                        redTokensGoal.Children[i].Opacity = 1;
+                    }
+
+                    if (teamGreen.TeamTokens[i].isInsideGoal)
+                    {
+                        greenTokensGoal.Children[i].Opacity = 1;
+                    }
+
+                    if (teamYellow.TeamTokens[i].isInsideGoal)
+                    {
+                        yellowTokensGoal.Children[i].Opacity = 1;
+                    }
+
+                    if (teamBlue.TeamTokens[i].isInsideGoal)
+                    {
+                        blueTokensGoal.Children[i].Opacity = 1;
+                    }
+
+                }
+            });
+        }
+
+        /// <summary>
+        /// Set the sizes for elements inside the Goal row below the game board.
+        /// </summary>
+        private async void SetTokenGoalRowSizes()
+        {
+            await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                int minFontSize = 12;
+                mainStackPanel.Width = backgroundImage.ActualWidth;
+                StartButton.Width = cellSize * 2;  
+
+                if (StartButton.Content is TextBlock buttonContent)
+                {
+                    double desiredFontSize = cellSize / 4;
+                    buttonContent.FontSize = desiredFontSize < minFontSize ? minFontSize : desiredFontSize;
+                }
+
+                foreach (var stackPanel in new[] { redTokensGoal, greenTokensGoal, yellowTokensGoal, blueTokensGoal })
+                {
+                    foreach (Ellipse ellipse in stackPanel.Children)
+                    {
+                        ellipse.Height = cellSize / 2;
+                        ellipse.Width = cellSize / 2;
+                    }
+                }
+                foreach (var child in mainStackPanel.Children)
+                {
+                    if (child is TextBlock textBlock && textBlock.Text == "GOAL:")
+                    {
+                        textBlock.FontSize = cellSize / 2;
+                    }
+                }
+            });
+        }
+
+        /// <summary>
+        /// Reset the game state to the initial state.
+        /// </summary>
+        private void ResetGameState()
+        {
+            // Reset the position of all tokens to their original positions
+            foreach(Token token in AllTokens())
+            {
+                token.resetToken();
+            }
+
+            menuPopup.IsOpen = false;
+            // Reset the current active team to a random team
+            currentActiveTeam = (ActiveTeam)new Random().Next(0, 4);
+
+            // Reset other necessary game state variables
+            selectedToken = null;
+            diceRollResult = 0;
+            EnableDiceClick();
+
+            // Possibly invalidate the canvas to redraw the initial game state
+            canvas.Invalidate();
+
+            Debug.WriteLine("Game state reset. Current active team: " + currentActiveTeam);
+        }
+
+        private void StartButton_Click(object sender, RoutedEventArgs e)
+        {
+            menuPopup.IsOpen = true;
+        }
+
+        private void MenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            menuPopup.IsOpen = true;
+        }
+        private void ContinueButton_Click(object sender, RoutedEventArgs e)
+        {
+            menuPopup.IsOpen = false;
+        }
+        private void SaveQuitButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void QuitButton_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Exit();
+        }
+
+        //This does not work for some reason....
+        private void menuPopup_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.Escape)
+            {
+                if (menuPopup.IsOpen)
+                {
+                    menuPopup.IsOpen = false;
+                }
+                else
+                {
+                    menuPopup.IsOpen = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// This method is used to simulate a CPU player rolling the dice.
+        /// </summary>
+        private async void CpuPlayerRollDice()
+        {
+            await Task.Delay(2000);
+            Debug.WriteLine("CPU turn");
+            RollDiceButton_Click(this,null);
+            Debug.WriteLine("Dice roll: " + diceRollResult);
+
+        }
+
+        /// <summary>
+        /// This method is used to simulate a CPU player picking a token and moving it.
+        /// </summary>
+        /// TODO: Check so that you can't walk into goal unless you rolled the exact amount of steps needed to reach goal.
+        private async void CpuPlayerPickToken() 
+        {   
+            await Task.Delay(2000);
+            if(diceRollResult == 6)
+            {
+                selectedToken = GetCurrentTeam().TeamTokens[new Random().Next(0, 4)];
+            }
+            else
+            {
+                List<Token> tokensNotInBase = new List<Token>();
+                foreach (Token token in GetCurrentTeam().TeamTokens)
+                {
+                    if (!token.isAtBase(grid))
+                    {
+                        tokensNotInBase.Add(token);
+                    }
+                }
+                selectedToken = tokensNotInBase[new Random().Next(0, tokensNotInBase.Count)];
+            }
+            selectedToken.MoveToken(selectedToken, diceRollResult, grid, AllTokens());
+            SwitchToNextTeam();
+            Debug.WriteLine("Current active team: " + currentActiveTeam);
+            EnableDiceClick();
+        }
+
+        /// <summary>
+        /// Gathers the user selections from the start menu and sets the AI property of the teams.
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            base.OnNavigatedTo(e);
+            if (e.Parameter is Dictionary<string, string> userSelections)
+            {
+                teamGreen.AI = userSelections["Green"] == "Ai";
+                teamRed.AI = userSelections["Red"] == "Ai";
+                teamYellow.AI = userSelections["Yellow"] == "Ai";
+                teamBlue.AI = userSelections["Blue"] == "Ai";
+                
+                Debug.WriteLine("Green: " + teamGreen.AI);
+                Debug.WriteLine("Red: " + teamRed.AI);
+                Debug.WriteLine("Yellow: " + teamYellow.AI);
+                Debug.WriteLine("Blue: " + teamBlue.AI);
+            }
+        }
     }
+    
+
 }
