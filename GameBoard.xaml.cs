@@ -44,7 +44,7 @@ namespace FiaMedKnuffGrupp4
         private Team teamBlue = new Models.Team(Colors.Blue);
         private Teams teams = new Models.Teams();
         private int numberOfColumnsInGrid = 15;
-        private bool drawGrid = true; //For debugging purposes
+        private bool drawGrid = false; //For debugging purposes
         private float cellSize;
         public Token selectedToken;
         private int diceRollResult;
