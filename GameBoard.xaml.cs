@@ -462,6 +462,7 @@ namespace FiaMedKnuffGrupp4
             PlayDiceSound();
             await RollDiceAnimation();
             diceRollResult = random.Next(1, 7);
+            Debug.WriteLine("Dice roll result: " + diceRollResult);
             DiceImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/dice_" + diceRollResult + ".png"));
             DisableDiceClick();
             if(!IsValidRoll())
@@ -805,7 +806,6 @@ namespace FiaMedKnuffGrupp4
             await Task.Delay(2000);
             Debug.WriteLine("CPU turn");
             RollDiceButton_Click(this,null);
-            Debug.WriteLine("Dice roll: " + diceRollResult);
 
         }
 
