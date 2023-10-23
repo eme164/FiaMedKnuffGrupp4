@@ -73,8 +73,8 @@ namespace FiaMedKnuffGrupp4
             teamRed.AddToken(new Token("Red4", 13, 4, Colors.Red));
 
             //Only for testing purposes to get tokens to goal faster
-            //teamRed.AddToken(new Token("Red1", 10, 7, Colors.Red));
-            //teamRed.AddToken(new Token("Red2", 9, 7, Colors.Red));
+            //teamRed.AddToken(new Token("Red1", 10, 1, Colors.Red));
+            //teamRed.AddToken(new Token("Red2", 13, 1, Colors.Red));
             //teamRed.AddToken(new Token("Red3", 9, 7, Colors.Red));
             //teamRed.AddToken(new Token("Red4", 10, 7, Colors.Red));
 
@@ -92,11 +92,6 @@ namespace FiaMedKnuffGrupp4
             teamBlue.AddToken(new Token("Blue2", 10, 13, Colors.Blue));
             teamBlue.AddToken(new Token("Blue3", 13, 10, Colors.Blue));
             teamBlue.AddToken(new Token("Blue4", 13, 13, Colors.Blue));
-
-            //change this depending on how many CPU opponents you want
-            //teamBlue.AI = true;
-            //teamYellow.AI = true;
-            //teamGreen.AI = true;
 
             // Add teams to the Teams collection
             teams.AddTeam(teamRed);
@@ -124,11 +119,6 @@ namespace FiaMedKnuffGrupp4
             this.InitializeComponent();
             InitializeGame();
 
-            if (GetCurrentTeam().AI)
-            {
-                CpuPlayerRollDice();
-            }
-            Debug.WriteLine("Current active team: " + currentActiveTeam);
         }
 
         //Return user type from startmenutogame.xaml
@@ -835,7 +825,8 @@ namespace FiaMedKnuffGrupp4
                 List<Token> tokensNotInBase = new List<Token>();
                 foreach (Token token in GetCurrentTeam().TeamTokens)
                 {
-                    if (!token.isAtBase(grid))
+                    int stepsToGoal = StepsToGoal(token);
+                    if (!token.isAtBase(grid) && diceRollResult <= stepsToGoal)
                     {
                         tokensNotInBase.Add(token);
                     }
@@ -866,6 +857,12 @@ namespace FiaMedKnuffGrupp4
                 Debug.WriteLine("Red: " + teamRed.AI);
                 Debug.WriteLine("Yellow: " + teamYellow.AI);
                 Debug.WriteLine("Blue: " + teamBlue.AI);
+
+                if (GetCurrentTeam().AI)
+                {
+                    CpuPlayerRollDice();
+                }
+                Debug.WriteLine("Current active team: " + currentActiveTeam);
             }
         }
     }
