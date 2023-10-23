@@ -94,6 +94,7 @@ namespace FiaMedKnuffGrupp4
             teamBlue.AddToken(new Token("Blue4", 13, 13, Colors.Blue));
             teamBlue.AI = true;
             teamYellow.AI = true;
+            teamGreen.AI = true;
 
             // Add teams to the Teams collection
             teams.AddTeam(teamRed);
@@ -121,6 +122,10 @@ namespace FiaMedKnuffGrupp4
             this.InitializeComponent();
             InitializeGame();
 
+            if (GetCurrentTeam().AI)
+            {
+                CpuPlayerRollDice();
+            }
             Debug.WriteLine("Current active team: " + currentActiveTeam);
         }
 
@@ -196,6 +201,7 @@ namespace FiaMedKnuffGrupp4
                     token.UpdateAnimation();
                 }
             }
+
         }
 
         /// <summary>
@@ -830,6 +836,7 @@ namespace FiaMedKnuffGrupp4
             }
             selectedToken.MoveToken(selectedToken, diceRollResult, grid, AllTokens());
             SwitchToNextTeam();
+            Debug.WriteLine("Current active team: " + currentActiveTeam);
             EnableDiceClick();
         }
     }
