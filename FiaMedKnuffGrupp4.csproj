@@ -144,6 +144,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\background_music.mp3" />
     <Content Include="Assets\Images\Gameboard\Board.png" />
     <Content Include="Assets\dice_1.png" />
     <Content Include="Assets\dice_2.png" />

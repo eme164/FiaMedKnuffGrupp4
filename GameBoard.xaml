@@ -110,6 +110,7 @@
                     Foreground="White">
                     GOAL:
                 </TextBlock>
+
                 <StackPanel x:Name="redTokensGoal" Orientation="Horizontal">
 
                     <Ellipse
@@ -241,6 +242,21 @@
 
             </StackPanel>
         </Grid>
+        <Button x:Name="MuteUnmuteButton" Width="100" Height="35" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,50,0" Click="MuteUnmuteButton_Click" BorderBrush="White" BorderThickness="2" CornerRadius="10" FontSize="20" Grid.Column="1">
+            <Button.FocusVisualPrimaryBrush>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Color="Black" />
+                    <GradientStop Offset="1" Color="White" />
+                </LinearGradientBrush>
+            </Button.FocusVisualPrimaryBrush>
+            <Button.Background>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Offset="0.57" Color="#FFF86C00" />
+                    <GradientStop Offset="0.933" Color="#FF97530F" />
+                </LinearGradientBrush>
+            </Button.Background>
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center"><Run Text="Mute"/></TextBlock>
+        </Button>
 
     </Grid>
 </Page>
