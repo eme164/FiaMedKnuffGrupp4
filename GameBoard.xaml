@@ -14,11 +14,11 @@
             <ImageBrush ImageSource="Assets/Mask group.png" Stretch="fill" />
         </Grid.Background>
 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition x:Name="tokenGoalRow" Height="38" />
+        </Grid.RowDefinitions>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition x:Name="buttonArea" Width="500" />
-        </Grid.ColumnDefinitions>
         <Image
             x:Name="backgroundImage"
             Source="/Assets/Images/Gameboard/Board.png"
@@ -30,34 +30,86 @@
             Draw="canvas_Draw"
             PointerPressed="canvas_PointerPressed"
             Update="canvas_Update" />
-        <Popup
-            x:Name="menuPopup"
-            Grid.Column="1"
-            Width="400"
-            Height="500"
-            VerticalAlignment="Bottom"
-            IsLightDismissEnabled="True"
-            IsOpen="False"
-            LightDismissOverlayMode="On"
-            RelativePanel.AlignHorizontalCenterWithPanel="True"
-            RelativePanel.AlignVerticalCenterWithPanel="True">
-            <Popup.ChildTransitions>
-                <TransitionCollection>
-                    <PaneThemeTransition Edge="Bottom" />
-                </TransitionCollection>
-            </Popup.ChildTransitions>
-            <StackPanel Height="{Binding ElementName=menuPopup, Path=Height}" Background="Orange">
-                <Button
-                    x:Name="restart"
-                    Width="342"
-                    Height="50"
-                    Background="White"
-                    Click="restart_Click"
-                    Content="Restart" />
-                <Button />
-            </StackPanel>
-
-        </Popup>
+        <RelativePanel KeyDown="menuPopup_KeyDown">
+            <Popup
+                x:Name="menuPopup"
+                Width="506"
+                Height="723"
+                IsLightDismissEnabled="True"
+                IsOpen="False"
+                KeyDown="menuPopup_KeyDown"
+                LightDismissOverlayMode="On"
+                RelativePanel.AlignHorizontalCenterWithPanel="True"
+                RelativePanel.AlignVerticalCenterWithPanel="True">
+                <Popup.ChildTransitions>
+                    <TransitionCollection>
+                        <PaneThemeTransition Edge="Bottom" />
+                    </TransitionCollection>
+                </Popup.ChildTransitions>
+                <Grid>
+                    <Image x:Name="popupMaskgroup1" Source="Assets/Mask group (2).png" />
+                    <Button
+                        x:Name="saveandquit"
+                        Width="300"
+                        Height="100"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        BorderBrush="#FFFFB589"
+                        Click="SaveQuitButton_Click"
+                        Content="Save n Quit"
+                        CornerRadius="10"
+                        FontSize="50"
+                        FontWeight="Bold">
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                <GradientStop Offset="0.602" Color="#FFFF8106" />
+                                <GradientStop Offset="1" Color="#B15500" />
+                            </LinearGradientBrush>
+                        </Button.Background>
+                    </Button>
+                    <Button
+                        x:Name="Continue"
+                        Width="300"
+                        Height="100"
+                        Margin="0,250,0,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        BorderBrush="#FFFFB589"
+                        Click="ContinueButton_Click"
+                        Content="Continue"
+                        CornerRadius="10"
+                        FontSize="50 "
+                        FontWeight="Bold">
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                <GradientStop Offset="0.602" Color="#FFFF8106" />
+                                <GradientStop Offset="1" Color="#B15500" />
+                            </LinearGradientBrush>
+                        </Button.Background>
+                    </Button>
+                    <Button
+                        x:Name="quit"
+                        Width="300"
+                        Height="100"
+                        Margin="0,500,0,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        BorderBrush="#FFFFB589"
+                        Click="QuitButton_Click"
+                        Content="Quit"
+                        CornerRadius="10"
+                        FontSize="50 "
+                        FontWeight="Bold">
+                        <Button.Background>
+                            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                <GradientStop Offset="0.602" Color="#FFFF8106" />
+                                <GradientStop Offset="1" Color="#B15500" />
+                            </LinearGradientBrush>
+                        </Button.Background>
+                    </Button>
+                </Grid>
+            </Popup>
+        </RelativePanel>
         <Image
             x:Name="DiceImage"
             Width="100"
@@ -72,16 +124,18 @@
             Visibility="Collapsed" />
         <Grid
             x:Name="bottomGrid"
-            Grid.Column="1"
-            HorizontalAlignment="Left"
-            VerticalAlignment="top">
-            <StackPanel x:Name="mainStackPanel" Orientation="Vertical">
+            Grid.Row="1"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+            <StackPanel
+                x:Name="mainStackPanel"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
                 <Button
                     x:Name="StartButton"
                     Width="100"
                     Height="35"
                     MinWidth="50"
-                    Margin="0,20,0,20"
                     VerticalAlignment="Top"
                     BorderBrush="White"
                     BorderThickness="2"
