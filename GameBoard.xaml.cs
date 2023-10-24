@@ -44,7 +44,7 @@ namespace FiaMedKnuffGrupp4
         private Team teamBlue = new Models.Team(Colors.Blue);
         private Teams teams = new Models.Teams();
         private int numberOfColumnsInGrid = 15;
-        private bool drawGrid = true; //For debugging purposes
+        private bool drawGrid = false; //For debugging purposes
         private float cellSize;
         public Token selectedToken;
         private int diceRollResult;
@@ -73,8 +73,8 @@ namespace FiaMedKnuffGrupp4
             teamRed.AddToken(new Token("Red4", 13, 4, Colors.Red));
 
             //Only for testing purposes to get tokens to goal faster
-            //teamRed.AddToken(new Token("Red1", 10, 7, Colors.Red));
-            //teamRed.AddToken(new Token("Red2", 9, 7, Colors.Red));
+            //teamRed.AddToken(new Token("Red1", 10, 1, Colors.Red));
+            //teamRed.AddToken(new Token("Red2", 13, 1, Colors.Red));
             //teamRed.AddToken(new Token("Red3", 9, 7, Colors.Red));
             //teamRed.AddToken(new Token("Red4", 10, 7, Colors.Red));
 
@@ -92,11 +92,6 @@ namespace FiaMedKnuffGrupp4
             teamBlue.AddToken(new Token("Blue2", 10, 13, Colors.Blue));
             teamBlue.AddToken(new Token("Blue3", 13, 10, Colors.Blue));
             teamBlue.AddToken(new Token("Blue4", 13, 13, Colors.Blue));
-
-            //change this depending on how many CPU opponents you want
-            //teamBlue.AI = true;
-            //teamYellow.AI = true;
-            //teamGreen.AI = true;
 
             // Add teams to the Teams collection
             teams.AddTeam(teamRed);
@@ -124,11 +119,9 @@ namespace FiaMedKnuffGrupp4
             this.InitializeComponent();
             InitializeGame();
 
-            if (GetCurrentTeam().AI)
-            {
-                CpuPlayerRollDice();
-            }
             Debug.WriteLine("Current active team: " + currentActiveTeam);
+
+            PlayBackgroundMusic();
         }
 
         //Return user type from startmenutogame.xaml
@@ -472,6 +465,7 @@ namespace FiaMedKnuffGrupp4
             PlayDiceSound();
             await RollDiceAnimation();
             diceRollResult = random.Next(1, 7);
+            Debug.WriteLine("Dice roll result: " + diceRollResult);
             DiceImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/dice_" + diceRollResult + ".png"));
             DisableDiceClick();
             if(!IsValidRoll())
@@ -769,9 +763,36 @@ namespace FiaMedKnuffGrupp4
             Debug.WriteLine("Game state reset. Current active team: " + currentActiveTeam);
         }
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
+        MediaPlayer backgroundMusicPlayer = new MediaPlayer();
+        public void PlayBackgroundMusic()
         {
-            menuPopup.IsOpen = true;
+            backgroundMusicPlayer.AutoPlay = true;
+            backgroundMusicPlayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/background_music.mp3"));
+            backgroundMusicPlayer.IsLoopingEnabled = true;  // If you want the music to loop
+            backgroundMusicPlayer.Volume = 0.5;  // Adjust volume as needed
+            backgroundMusicPlayer.Play();
+        }
+
+        // Field to track mute state
+        private bool isMuted = false;
+
+        // Event handler for mute/unmute button click
+        private void MuteUnmuteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (isMuted)
+            {
+                // Currently muted, so unmute
+                backgroundMusicPlayer.IsMuted = false;
+                MuteUnmuteButton.Content = new TextBlock { Text = "Mute", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }; // Change button text to "Mute"
+                isMuted = false;
+            }
+            else
+            {
+                // Currently unmuted, so mute
+                backgroundMusicPlayer.IsMuted = true;
+                MuteUnmuteButton.Content = new TextBlock { Text = "Unmute", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }; // Change button text to "Unmute"
+                isMuted = true;
+            }
         }
 
         private void MenuButton_Click(object sender, RoutedEventArgs e)
@@ -843,8 +864,6 @@ namespace FiaMedKnuffGrupp4
             await Task.Delay(2000);
             Debug.WriteLine("CPU turn");
             RollDiceButton_Click(this,null);
-            Debug.WriteLine("Dice roll: " + diceRollResult);
-
         }
 
         /// <summary>
@@ -863,7 +882,8 @@ namespace FiaMedKnuffGrupp4
                 List<Token> tokensNotInBase = new List<Token>();
                 foreach (Token token in GetCurrentTeam().TeamTokens)
                 {
-                    if (!token.isAtBase(grid))
+                    int stepsToGoal = StepsToGoal(token);
+                    if (!token.isAtBase(grid) && diceRollResult <= stepsToGoal)
                     {
                         tokensNotInBase.Add(token);
                     }
@@ -894,9 +914,59 @@ namespace FiaMedKnuffGrupp4
                 Debug.WriteLine("Red: " + teamRed.AI);
                 Debug.WriteLine("Yellow: " + teamYellow.AI);
                 Debug.WriteLine("Blue: " + teamBlue.AI);
+
+                if (GetCurrentTeam().AI)
+                {
+                    CpuPlayerRollDice();
+                }
+                Debug.WriteLine("Current active team: " + currentActiveTeam);
             }
         }
+
+        /// <summary>
+        /// Manly used to pause the canvas when the user navigates away from the game.
+        /// This prevents the game from having unfinished methods running in the background
+        /// Causing the game to Freeze.
+        /// </summary>
+        /// <param name="e"></param>
+        /// TODO: Fix so that the AI does not roll the dice after the user navigates away from the game.
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            // Turn off the game
+            StopGame();
+        }
+
+        /// <summary>
+        /// Pauses Canvas, stops background music and resets the game state.
+        /// </summary>
+        private void StopGame()
+        {
+            // 1. Stopping animations or updates
+            if (canvas != null)
+            {
+                canvas.Paused = true;
+            }
+
+            StopBackgroundMusic();
+
+            foreach(Team team in teams.TeamList)
+            {
+                team.AI = false;
+            }
+            ResetGameState();
+        }
+
+        /// <summary>
+        /// Pauses the background music
+        /// </summary>
+        private void StopBackgroundMusic()
+        {
+            backgroundMusicPlayer.Pause();
+        }
+
     }
-    
+
 
 }
