@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FiaMedKnuffGrupp4.Models;
+using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Xaml;
@@ -20,6 +21,8 @@ namespace FiaMedKnuffGrupp4
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+
+            DataAccess.InitializeDatabase();
         }
 
         /// <summary>
@@ -36,9 +39,6 @@ namespace FiaMedKnuffGrupp4
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();
                 rootFrame.NavigationFailed += OnNavigationFailed;
-
-                // Initialize the database here
-                DatabaseUtility.InitializeDatabase(); // Add this line
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {

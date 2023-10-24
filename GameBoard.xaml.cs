@@ -94,7 +94,7 @@ namespace FiaMedKnuffGrupp4
         public Token selectedToken;
         private int diceRollResult;
         CanvasDrawingSession drawingSession;
-        private enum ActiveTeam
+        public enum ActiveTeam
         {
             Red,
             Green,

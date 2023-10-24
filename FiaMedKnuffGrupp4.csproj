@@ -129,6 +129,7 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\GameState.cs" />
     <Compile Include="Models\Grid.cs" />
     <Compile Include="Models\Team.cs" />
     <Compile Include="Models\Teams.cs" />
