@@ -59,7 +59,7 @@ namespace FiaMedKnuffGrupp4
                 {"Red", flipView3.SelectedItem.ToString()},
                 {"Blue", flipView4.SelectedItem.ToString()}
             };
-
+             
             return selections;
         }
 

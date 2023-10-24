@@ -778,6 +778,34 @@ namespace FiaMedKnuffGrupp4
         {
             menuPopup.IsOpen = true;
         }
+
+        private void RulesButton_Click(object sender, RoutedEventArgs e)
+        {
+            rulesPopup.IsOpen = true;
+
+         
+
+            /*Popup rulesPopup = new Popup();
+ 
+            Image photo = new Image();
+            photo.Source = new BitmapImage(new Uri("ms-appx:///Assets/Mask group (3).png"));
+
+            rulesPopup.Child = photo;
+
+            rulesPopup.IsOpen = true;
+
+            await Task.Delay(10000); 
+            rulesPopup.IsOpen = false;*/
+
+
+        }
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Close the pop-up
+            rulesPopup.IsOpen = false;
+        }
+
         private void ContinueButton_Click(object sender, RoutedEventArgs e)
         {
             menuPopup.IsOpen = false;
