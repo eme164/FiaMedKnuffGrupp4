@@ -840,7 +840,6 @@ namespace FiaMedKnuffGrupp4
             await Task.Delay(2000);
             Debug.WriteLine("CPU turn");
             RollDiceButton_Click(this,null);
-
         }
 
         /// <summary>
@@ -899,7 +898,51 @@ namespace FiaMedKnuffGrupp4
                 Debug.WriteLine("Current active team: " + currentActiveTeam);
             }
         }
+
+        /// <summary>
+        /// Manly used to pause the canvas when the user navigates away from the game.
+        /// This prevents the game from having unfinished methods running in the background
+        /// Causing the game to Freeze.
+        /// </summary>
+        /// <param name="e"></param>
+        /// TODO: Fix so that the AI does not roll the dice after the user navigates away from the game.
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+
+            // Turn off the game
+            StopGame();
+        }
+
+        /// <summary>
+        /// Pauses Canvas, stops background music and resets the game state.
+        /// </summary>
+        private void StopGame()
+        {
+            // 1. Stopping animations or updates
+            if (canvas != null)
+            {
+                canvas.Paused = true;
+            }
+
+            StopBackgroundMusic();
+
+            foreach(Team team in teams.TeamList)
+            {
+                team.AI = false;
+            }
+            ResetGameState();
+        }
+
+        /// <summary>
+        /// Pauses the background music
+        /// </summary>
+        private void StopBackgroundMusic()
+        {
+            backgroundMusicPlayer.Pause();
+        }
+
     }
-    
+
 
 }
