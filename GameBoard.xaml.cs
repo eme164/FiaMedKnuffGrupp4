@@ -845,6 +845,7 @@ namespace FiaMedKnuffGrupp4
         private void SaveQuitButton_Click(object sender, RoutedEventArgs e)
         {
             SaveGameState();
+            Frame.Navigate(typeof(MainPage));
         }
         private void QuitButton_Click(object sender, RoutedEventArgs e)
         {
