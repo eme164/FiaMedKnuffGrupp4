@@ -145,6 +145,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\background_music.mp3" />
     <Content Include="Assets\Images\Gameboard\Board.png" />
     <Content Include="Assets\dice_1.png" />
     <Content Include="Assets\dice_2.png" />
@@ -156,6 +157,8 @@
     <Content Include="Assets\Mask group %282%29.png" />
     <Content Include="Assets\Images\Victory.png" />
     <Content Include="Assets\LUDO.png" />
+    <Content Include="Assets\Mask group %283%29.png" />
+    <Content Include="Assets\Mask group %284%29.png" />
     <Content Include="Assets\Mask group.png" />
     <Content Include="Assets\noftication_roll6.mp3" />
     <Content Include="Properties\Default.rd.xml" />
