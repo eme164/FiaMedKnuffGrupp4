@@ -91,7 +91,7 @@ public static class DataAccess
             db.Open();
 
             // Create a SQL command to select the latest saved game state from the database
-            SqliteCommand selectCommand = new SqliteCommand("SELECT GameState FROM GameState ORDER BY Id DESC LIMIT 1;", db);
+            SqliteCommand selectCommand = new SqliteCommand("SELECT GameData FROM GameState ORDER BY Id DESC LIMIT 1;", db);
 
             // Execute the SQL command and retrieve the result
             var result = selectCommand.ExecuteScalar();

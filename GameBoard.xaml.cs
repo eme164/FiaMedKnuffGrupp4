@@ -48,6 +48,7 @@ namespace FiaMedKnuffGrupp4
         private float cellSize;
         public Token selectedToken;
         private int diceRollResult;
+        private bool loadGame = false;
         CanvasDrawingSession drawingSession;
        
         public enum ActiveTeam
@@ -94,6 +95,11 @@ namespace FiaMedKnuffGrupp4
             teamBlue.AddToken(new Token("Blue3", 13, 10, Colors.Blue));
             teamBlue.AddToken(new Token("Blue4", 13, 13, Colors.Blue));
 
+            if (loadGame)
+            {
+                LoadGameState();
+            }
+
             // Add teams to the Teams collection
             teams.AddTeam(teamRed);
             teams.AddTeam(teamGreen);
@@ -118,7 +124,7 @@ namespace FiaMedKnuffGrupp4
         public GameBoard()
         {
             this.InitializeComponent();
-            InitializeGame();
+            //InitializeGame();
 
             Debug.WriteLine("Current active team: " + currentActiveTeam);
 
@@ -838,7 +844,7 @@ namespace FiaMedKnuffGrupp4
         }
         private void SaveQuitButton_Click(object sender, RoutedEventArgs e)
         {
-
+            SaveGameState();
         }
         private void QuitButton_Click(object sender, RoutedEventArgs e)
         {
@@ -920,12 +926,25 @@ namespace FiaMedKnuffGrupp4
                 Debug.WriteLine("Yellow: " + teamYellow.AI);
                 Debug.WriteLine("Blue: " + teamBlue.AI);
 
-                if (GetCurrentTeam().AI)
-                {
-                    CpuPlayerRollDice();
-                }
-                Debug.WriteLine("Current active team: " + currentActiveTeam);
+                //if (GetCurrentTeam().AI)
+                //{
+                //    CpuPlayerRollDice();
+                //}
+                //Debug.WriteLine("Current active team: " + currentActiveTeam);
             }
+
+            if(e.Parameter is bool loadGameState)
+            {
+                loadGame = loadGameState;
+            }
+
+            InitializeGame();
+
+            if (GetCurrentTeam().AI)
+            {
+                CpuPlayerRollDice();
+            }
+            Debug.WriteLine("Current active team: " + currentActiveTeam);
         }
 
         /// <summary>
@@ -969,6 +988,49 @@ namespace FiaMedKnuffGrupp4
         private void StopBackgroundMusic()
         {
             backgroundMusicPlayer.Pause();
+        }
+
+        /// <summary>
+        /// Save the current game state to the database.
+        /// </summary>
+        private void SaveGameState()
+        {
+            // Create a list of teams to save
+            List<Team> teamsToSave = new List<Team> { teamRed, teamGreen, teamYellow, teamBlue };
+
+            // Create a new GameState object with current game data
+            var gameState = new Models.GameState(teamsToSave, currentActiveTeam);
+
+            // Serialize the game state to a JSON string
+            string serializedState = gameState.SerializeGameState();
+
+            // Save the serialized state to the database
+            DataAccess.SetGameState(serializedState);
+        }
+
+        /// <summary>
+        /// Set the game state to the saved state.
+        /// </summary>
+        private void LoadGameState()
+        {
+            // Get the serialized game state from the database
+            string serializedState = DataAccess.GetGameState();
+
+            if (string.IsNullOrEmpty(serializedState))
+                return; // No saved state available
+
+            // Create a new empty GameState object
+            var gameState = new Models.GameState(null, ActiveTeam.Red);
+
+            // Deserialize the saved state into the gameState object
+            gameState.DeserializeGameState(serializedState);
+
+            // Restore game properties from the gameState object
+            teamRed = gameState.Teams.FirstOrDefault(t => t.TeamColor == Colors.Red);
+            teamGreen = gameState.Teams.FirstOrDefault(t => t.TeamColor == Colors.Green);
+            teamYellow = gameState.Teams.FirstOrDefault(t => t.TeamColor == Colors.Yellow);
+            teamBlue = gameState.Teams.FirstOrDefault(t => t.TeamColor == Colors.Blue);
+            currentActiveTeam = gameState.CurrentActiveTeam;
         }
 
     }
