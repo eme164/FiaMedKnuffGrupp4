@@ -798,6 +798,10 @@ namespace FiaMedKnuffGrupp4
         {
             menuPopup.IsOpen = true;
         }
+        private void StartButton_Click(object sender, RoutedEventArgs e)
+        {
+            menuPopup.IsOpen = true;
+        }
         private void ContinueButton_Click(object sender, RoutedEventArgs e)
         {
             menuPopup.IsOpen = false;
