@@ -119,6 +119,9 @@ namespace FiaMedKnuffGrupp4
             this.InitializeComponent();
             InitializeGame();
 
+            Debug.WriteLine("Current active team: " + currentActiveTeam);
+
+            PlayBackgroundMusic();
         }
 
         //Return user type from startmenutogame.xaml
@@ -760,12 +763,43 @@ namespace FiaMedKnuffGrupp4
             Debug.WriteLine("Game state reset. Current active team: " + currentActiveTeam);
         }
 
-        private void StartButton_Click(object sender, RoutedEventArgs e)
+        MediaPlayer backgroundMusicPlayer = new MediaPlayer();
+        public void PlayBackgroundMusic()
         {
-            menuPopup.IsOpen = true;
+            backgroundMusicPlayer.AutoPlay = true;
+            backgroundMusicPlayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/background_music.mp3"));
+            backgroundMusicPlayer.IsLoopingEnabled = true;  // If you want the music to loop
+            backgroundMusicPlayer.Volume = 0.5;  // Adjust volume as needed
+            backgroundMusicPlayer.Play();
+        }
+
+        // Field to track mute state
+        private bool isMuted = false;
+
+        // Event handler for mute/unmute button click
+        private void MuteUnmuteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (isMuted)
+            {
+                // Currently muted, so unmute
+                backgroundMusicPlayer.IsMuted = false;
+                MuteUnmuteButton.Content = new TextBlock { Text = "Mute", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }; // Change button text to "Mute"
+                isMuted = false;
+            }
+            else
+            {
+                // Currently unmuted, so mute
+                backgroundMusicPlayer.IsMuted = true;
+                MuteUnmuteButton.Content = new TextBlock { Text = "Unmute", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center }; // Change button text to "Unmute"
+                isMuted = true;
+            }
         }
 
         private void MenuButton_Click(object sender, RoutedEventArgs e)
+        {
+            menuPopup.IsOpen = true;
+        }
+        private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             menuPopup.IsOpen = true;
         }
