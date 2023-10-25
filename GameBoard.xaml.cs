@@ -26,7 +26,6 @@ using System.Diagnostics;
 using ColorCode.Common;
 using Windows.UI.Xaml.Shapes;
 using Windows.System;
-using Windows.UI.Xaml.Media.Animation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -126,10 +125,8 @@ namespace FiaMedKnuffGrupp4
         {
             this.InitializeComponent();
             //InitializeGame();
-
+            
             Debug.WriteLine("Current active team: " + currentActiveTeam);
-
-            UpdateTurnIndicator();
 
             PlayBackgroundMusic();
         }
@@ -437,9 +434,8 @@ namespace FiaMedKnuffGrupp4
                         }
                         break;
                 }
-
             }
-            UpdateTurnIndicator();
+                UpdateTurnIndicator();
         }
 
         /// <summary>
@@ -931,44 +927,6 @@ namespace FiaMedKnuffGrupp4
                 Debug.WriteLine("Yellow: " + teamYellow.AI);
                 Debug.WriteLine("Blue: " + teamBlue.AI);
 
-                if (GetCurrentTeam().AI)
-                {
-                    CpuPlayerRollDice();
-                }
-                Debug.WriteLine("Current active team: " + currentActiveTeam);
-            }
-        }
-
-        private async void UpdateTurnIndicator()
-        {
-            var currentTeam = currentActiveTeam;
-            turnIndicatorTextBlock.Text = $"Turn: Team {currentTeam}";
-
-            Color teamColor;
-            switch (currentTeam)
-            {
-                case ActiveTeam.Red:
-                    teamColor = Colors.Red;
-                    break;
-                case ActiveTeam.Green:
-                    teamColor = Colors.Green;
-                    break;
-                case ActiveTeam.Blue:
-                    teamColor = Colors.Blue;
-                    break;
-                case ActiveTeam.Yellow:
-                    teamColor = Colors.Yellow;
-                    break;
-                default:
-                    teamColor = Colors.Black; // Default color.
-                    break;
-            }
-
-            turnIndicatorTextBlock.Foreground = new SolidColorBrush(teamColor);
-
-        }
-
-
                 //if (GetCurrentTeam().AI)
                 //{
                 //    CpuPlayerRollDice();
@@ -982,6 +940,7 @@ namespace FiaMedKnuffGrupp4
             }
 
             InitializeGame();
+            UpdateTurnIndicator();
 
             if (GetCurrentTeam().AI)
             {
@@ -1075,6 +1034,36 @@ namespace FiaMedKnuffGrupp4
             teamBlue = gameState.Teams.FirstOrDefault(t => t.TeamColor == Colors.Blue);
             currentActiveTeam = gameState.CurrentActiveTeam;
         }
+
+        private async void UpdateTurnIndicator()
+        {
+            var currentTeam = currentActiveTeam;
+            turnIndicatorTextBlock.Text = $"Turn: Team {currentTeam}";
+
+            Color teamColor;
+            switch (currentTeam)
+            {
+                case ActiveTeam.Red:
+                    teamColor = Colors.Red;
+                    break;
+                case ActiveTeam.Green:
+                    teamColor = Colors.Green;
+                    break;
+                case ActiveTeam.Blue:
+                    teamColor = Colors.Blue;
+                    break;
+                case ActiveTeam.Yellow:
+                    teamColor = Colors.Yellow;
+                    break;
+                default:
+                    teamColor = Colors.Black; // Default color.
+                    break;
+            }
+
+            turnIndicatorTextBlock.Foreground = new SolidColorBrush(teamColor);
+
+        }
+
 
     }
 
