@@ -125,7 +125,7 @@ namespace FiaMedKnuffGrupp4
         {
             this.InitializeComponent();
             //InitializeGame();
-
+            UpdateTurnIndicator();
             Debug.WriteLine("Current active team: " + currentActiveTeam);
 
             PlayBackgroundMusic();
@@ -434,8 +434,8 @@ namespace FiaMedKnuffGrupp4
                         }
                         break;
                 }
-
             }
+                UpdateTurnIndicator();
         }
 
         /// <summary>
@@ -1033,6 +1033,36 @@ namespace FiaMedKnuffGrupp4
             teamBlue = gameState.Teams.FirstOrDefault(t => t.TeamColor == Colors.Blue);
             currentActiveTeam = gameState.CurrentActiveTeam;
         }
+
+        private async void UpdateTurnIndicator()
+        {
+            var currentTeam = currentActiveTeam;
+            turnIndicatorTextBlock.Text = $"Turn: Team {currentTeam}";
+
+            Color teamColor;
+            switch (currentTeam)
+            {
+                case ActiveTeam.Red:
+                    teamColor = Colors.Red;
+                    break;
+                case ActiveTeam.Green:
+                    teamColor = Colors.Green;
+                    break;
+                case ActiveTeam.Blue:
+                    teamColor = Colors.Blue;
+                    break;
+                case ActiveTeam.Yellow:
+                    teamColor = Colors.Yellow;
+                    break;
+                default:
+                    teamColor = Colors.Black; // Default color.
+                    break;
+            }
+
+            turnIndicatorTextBlock.Foreground = new SolidColorBrush(teamColor);
+
+        }
+
 
     }
 
