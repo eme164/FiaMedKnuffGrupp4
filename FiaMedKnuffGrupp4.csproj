@@ -119,7 +119,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="db.cs" />
     <Compile Include="GameBoard.xaml.cs">
       <DependentUpon>GameBoard.xaml</DependentUpon>
     </Compile>
@@ -129,6 +128,8 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\db.cs" />
+    <Compile Include="Models\GameState.cs" />
     <Compile Include="Models\Grid.cs" />
     <Compile Include="Models\Team.cs" />
     <Compile Include="Models\Teams.cs" />
@@ -156,6 +157,8 @@
     <Content Include="Assets\Mask group %282%29.png" />
     <Content Include="Assets\Images\Victory.png" />
     <Content Include="Assets\LUDO.png" />
+    <Content Include="Assets\Mask group %283%29.png" />
+    <Content Include="Assets\Mask group %284%29.png" />
     <Content Include="Assets\Mask group.png" />
     <Content Include="Assets\noftication_roll6.mp3" />
     <Content Include="Properties\Default.rd.xml" />
@@ -195,6 +198,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.14</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
     </PackageReference>
     <PackageReference Include="Win2D.uwp">
       <Version>1.27.0</Version>

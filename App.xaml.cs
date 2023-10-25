@@ -20,6 +20,8 @@ namespace FiaMedKnuffGrupp4
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+
+            DataAccess.InitializeDatabase();
         }
 
         /// <summary>
@@ -37,8 +39,6 @@ namespace FiaMedKnuffGrupp4
                 rootFrame = new Frame();
                 rootFrame.NavigationFailed += OnNavigationFailed;
 
-                // Initialize the database here
-                DatabaseUtility.InitializeDatabase(); // Add this line
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {

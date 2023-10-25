@@ -37,7 +37,8 @@ namespace FiaMedKnuffGrupp4
 
         private void Button_Continue(object sender, RoutedEventArgs e)
         {
-
+            var gameLoaded = IsGameLoaded();
+            Frame.Navigate(typeof(GameBoard), gameLoaded);
         }
 
         private void StartButton_Drop(object sender, DragEventArgs e)
@@ -47,9 +48,12 @@ namespace FiaMedKnuffGrupp4
 
         private void ContinueButton_Drop(Object sender, DragEventArgs e)
         {
-
+           
         }
-
+        private bool IsGameLoaded()
+        {
+            return true;
+        }
         private Dictionary<string, string> GetUserSelections()
         {
             var selections = new Dictionary<string, string>
@@ -59,7 +63,7 @@ namespace FiaMedKnuffGrupp4
                 {"Red", flipView3.SelectedItem.ToString()},
                 {"Blue", flipView4.SelectedItem.ToString()}
             };
-
+             
             return selections;
         }
 
