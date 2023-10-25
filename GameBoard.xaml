@@ -309,8 +309,16 @@
                     <GradientStop Offset="0.933" Color="#FF97530F" />
                 </LinearGradientBrush>
             </Button.Background>
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center"><Run Text="Mute"/></TextBlock>
+            <TextBlock HorizontalAlignment="Center" Margin="0,-2,0,0" Height="27" VerticalAlignment="Top"><Run Text="Mute"/></TextBlock>
         </Button>
+
+        <TextBlock x:Name="turnIndicatorTextBlock" 
+           Text="Turn: " 
+           FontSize="20" 
+           FontWeight="Bold" 
+           Foreground="Black" 
+           HorizontalAlignment="Left" 
+           Margin="10,18,0,2"/>
 
     </Grid>
 </Page>
