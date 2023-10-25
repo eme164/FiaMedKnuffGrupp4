@@ -184,7 +184,5 @@
             </Button.Content>
         </Button>
 
-        <TextBlock Text="Tokens per player(max 4) = " HorizontalAlignment="Left" VerticalAlignment="Top" Margin="374,636,0,0" Height="57" Width="428" FontSize="36" Foreground="#FFE33800" />
-        <TextBox HorizontalAlignment="Left" Margin="830,630,0,0" TextWrapping="Wrap" FontSize="40" Foreground="Black" Text="" VerticalAlignment="Top" Height="70" Width="95" Background="White" CornerRadius="5"/>
     </Grid>
 </Page>
