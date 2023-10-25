@@ -49,13 +49,28 @@
                 <Grid>
                     <Image x:Name="popupMaskgroup1" Source="Assets/Mask group (2).png" />
 
-                    <Popup x:Name="rulesPopup" IsOpen="False" IsLightDismissEnabled="True" Width="506" Height="720" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Popup
+                        x:Name="rulesPopup"
+                        Width="506"
+                        Height="720"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        IsLightDismissEnabled="True"
+                        IsOpen="False">
                         <Grid>
-                            
+
                             <Image Source="ms-appx:///Assets/Mask group (3).png" />
 
-                            
-                            <Button Content="X" Click="ExitButton_Click" Width="30" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top" CornerRadius="10" Margin="10,0,0,0" />
+
+                            <Button
+                                Width="30"
+                                Height="30"
+                                Margin="10,0,0,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Click="ExitButton_Click"
+                                Content="X"
+                                CornerRadius="10" />
                         </Grid>
                     </Popup>
 
@@ -79,8 +94,8 @@
                                 <GradientStop Offset="1" Color="#B15500" />
                             </LinearGradientBrush>
                         </Button.Background>
-                        
-                        
+
+
                     </Button>
 
                     <Button
@@ -332,7 +347,19 @@
 
             </StackPanel>
         </Grid>
-        <Button x:Name="MuteUnmuteButton" Width="100" Height="35" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,20,50,0" Click="MuteUnmuteButton_Click" BorderBrush="White" BorderThickness="2" CornerRadius="10" FontSize="20" Grid.Column="1">
+        <Button
+            x:Name="MuteUnmuteButton"
+            Grid.Column="1"
+            Width="100"
+            Height="35"
+            Margin="0,20,50,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            BorderBrush="White"
+            BorderThickness="2"
+            Click="MuteUnmuteButton_Click"
+            CornerRadius="10"
+            FontSize="20">
             <Button.FocusVisualPrimaryBrush>
                 <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
                     <GradientStop Color="Black" />
@@ -345,8 +372,17 @@
                     <GradientStop Offset="0.933" Color="#FF97530F" />
                 </LinearGradientBrush>
             </Button.Background>
-            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center"><Run Text="Mute"/></TextBlock>
+            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center"><Run Text="Mute" /></TextBlock>
         </Button>
+
+        <TextBlock
+            x:Name="turnIndicatorTextBlock"
+            Margin="10,18,0,2"
+            HorizontalAlignment="Left"
+            FontSize="20"
+            FontWeight="Bold"
+            Foreground="Black"
+            Text="Turn: " />
 
     </Grid>
 </Page>

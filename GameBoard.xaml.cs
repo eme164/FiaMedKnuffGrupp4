@@ -125,7 +125,7 @@ namespace FiaMedKnuffGrupp4
         {
             this.InitializeComponent();
             //InitializeGame();
-            UpdateTurnIndicator();
+            
             Debug.WriteLine("Current active team: " + currentActiveTeam);
 
             PlayBackgroundMusic();
@@ -940,6 +940,7 @@ namespace FiaMedKnuffGrupp4
             }
 
             InitializeGame();
+            UpdateTurnIndicator();
 
             if (GetCurrentTeam().AI)
             {
