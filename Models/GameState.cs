@@ -7,11 +7,13 @@ namespace FiaMedKnuffGrupp4.Models
     {
         public List<Team> Teams { get; set; }
         public GameBoard.ActiveTeam CurrentActiveTeam { get; set; }
+        public string Name { get; set; }
 
-        public GameState(List<Team> teams, GameBoard.ActiveTeam currentActiveTeam)
+        public GameState(List<Team> teams, GameBoard.ActiveTeam currentActiveTeam, string name)
         {
             Teams = teams;
             CurrentActiveTeam = currentActiveTeam;
+            Name = name;
         }
 
         /// <summary>

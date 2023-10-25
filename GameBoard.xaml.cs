@@ -993,7 +993,7 @@ namespace FiaMedKnuffGrupp4
         }
 
         /// <summary>
-        /// Save the current game state to the database.
+        /// Saves the current game state to the database with the name "continue" and overwrites any existing data.
         /// </summary>
         private void SaveGameState()
         {
@@ -1001,28 +1001,29 @@ namespace FiaMedKnuffGrupp4
             List<Team> teamsToSave = new List<Team> { teamRed, teamGreen, teamYellow, teamBlue };
 
             // Create a new GameState object with current game data
-            var gameState = new Models.GameState(teamsToSave, currentActiveTeam);
+            var gameState = new Models.GameState(teamsToSave, currentActiveTeam, "continue");
 
             // Serialize the game state to a JSON string
             string serializedState = gameState.SerializeGameState();
 
-            // Save the serialized state to the database
-            DataAccess.SetGameState(serializedState);
+            // Save the serialized state to the database with the name "continue" (overwriting existing data)
+            DataAccess.SetGameState("continue", serializedState);
         }
 
+
         /// <summary>
-        /// Set the game state to the saved state.
+        /// Set the game state to the saved state with the name "continue."
         /// </summary>
         private void LoadGameState()
         {
-            // Get the serialized game state from the database
-            string serializedState = DataAccess.GetGameState();
+            // Get the serialized game state with the name "continue" from the database
+            string serializedState = DataAccess.GetGameState("continue");
 
             if (string.IsNullOrEmpty(serializedState))
                 return; // No saved state available
 
             // Create a new empty GameState object
-            var gameState = new Models.GameState(null, ActiveTeam.Red);
+            var gameState = new Models.GameState(null, ActiveTeam.Red, "continue");
 
             // Deserialize the saved state into the gameState object
             gameState.DeserializeGameState(serializedState);
@@ -1034,6 +1035,7 @@ namespace FiaMedKnuffGrupp4
             teamBlue = gameState.Teams.FirstOrDefault(t => t.TeamColor == Colors.Blue);
             currentActiveTeam = gameState.CurrentActiveTeam;
         }
+
 
         private async void UpdateTurnIndicator()
         {

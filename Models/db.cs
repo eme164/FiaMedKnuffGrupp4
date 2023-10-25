@@ -22,7 +22,7 @@ public static class DataAccess
             db.Open();
 
             // Define the SQL command to create the 'GameState' table if it doesn't exist
-            String tableCommand = "CREATE TABLE IF NOT EXISTS GameState (Id INTEGER PRIMARY KEY AUTOINCREMENT, GameData TEXT)";
+            String tableCommand = "CREATE TABLE IF NOT EXISTS GameState (Id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT UNIQUE, GameData TEXT)";
 
             // Create a SQLite command for executing the table creation SQL
             SqliteCommand createTable = new SqliteCommand(tableCommand, db);
@@ -35,14 +35,14 @@ public static class DataAccess
         }
     }
 
-
     /// <summary>
     /// Stores the serialized game state as a JSON string in the local database.
-    /// This function takes a serialized game state in JSON format and stores it
-    /// as a new record in the database for later retrieval.
+    /// This function takes a serialized game state in JSON format, associates it with a name,
+    /// and stores it as a new record in the database for later retrieval.
     /// </summary>
+    /// <param name="name">A unique name to associate with the game state.</param>
     /// <param name="gameStateJson">A JSON string representing the serialized game state to be stored.</param>
-    public static void SetGameState(string gameStateJson)
+    public static void SetGameState(string name, string gameStateJson)
     {
         // Get the path to the local database file
         string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "database.db");
@@ -52,15 +52,16 @@ public static class DataAccess
         {
             db.Open();
 
-            // Create a SQL command for inserting the game state JSON into the database
+            // Create a SQL command for inserting the game state JSON and associated name into the database
             SqliteCommand insertCommand = new SqliteCommand();
             insertCommand.Connection = db;
 
-            // Use a parameterized query to prevent SQL injection attacks
-            insertCommand.CommandText = "INSERT INTO GameState VALUES (NULL, @gameState);";
+            // Use parameterized queries to prevent SQL injection attacks
+            insertCommand.CommandText = "INSERT INTO GameState (Name, GameData) VALUES (@name, @gameState);";
+            insertCommand.Parameters.AddWithValue("@name", name);
             insertCommand.Parameters.AddWithValue("@gameState", gameStateJson);
 
-            // Execute the SQL command to insert the game state JSON
+            // Execute the SQL command to insert the game state JSON and name
             insertCommand.ExecuteNonQuery();
 
             // Close the database connection
@@ -68,16 +69,13 @@ public static class DataAccess
         }
     }
 
-
     /// <summary>
-    /// Retrieves the serialized game state as a JSON string from the local database.
-    /// This function fetches the latest saved game state from the database and returns
-    /// it as a JSON string for deserialization.
+    /// Retrieves the serialized game state as a JSON string from the local database
+    /// based on the provided name.
     /// </summary>
-    /// <returns>
-    /// A JSON string containing the serialized game state if found; otherwise, null.
-    /// </returns>
-    public static string GetGameState()
+    /// <param name="name">The unique name associated with the desired game state.</param>
+    /// <returns>A JSON string representing the serialized game state, or null if not found.</returns>
+    public static string GetGameState(string name)
     {
         // Initialize the game state JSON string to null
         string gameStateJson = null;
@@ -90,8 +88,9 @@ public static class DataAccess
         {
             db.Open();
 
-            // Create a SQL command to select the latest saved game state from the database
-            SqliteCommand selectCommand = new SqliteCommand("SELECT GameData FROM GameState ORDER BY Id DESC LIMIT 1;", db);
+            // Create a SQL command to select the saved game state based on the provided name
+            SqliteCommand selectCommand = new SqliteCommand("SELECT GameData FROM GameState WHERE Name = @name;", db);
+            selectCommand.Parameters.AddWithValue("@name", name);
 
             // Execute the SQL command and retrieve the result
             var result = selectCommand.ExecuteScalar();
