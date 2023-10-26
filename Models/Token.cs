@@ -29,8 +29,8 @@ namespace FiaMedKnuffGrupp4.Models
         public bool IsAnimating { get; private set; } = false;
         private const float Duration = 1f; // half a second per tile
         public float Scale { get; set; } = 1.0f;
-        private readonly int StartPositionRow;
-        private readonly int StartPositionCol;
+        public int StartPositionRow;
+        public int StartPositionCol;
         public bool isInsideGoal { get; private set; }
 
         /// <summary>
