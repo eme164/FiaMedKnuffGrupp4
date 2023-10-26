@@ -26,7 +26,7 @@ namespace FiaMedKnuffGrupp4.Models
         {
             // Use the Newtonsoft.Json library to serialize the current GameState instance to JSON
             string serializedobject = JsonConvert.SerializeObject(this);
-            Debug.WriteLine("shit path: " + serializedobject);
+            Debug.WriteLine("JSON TXT: " + serializedobject);
             return serializedobject;
         }
 

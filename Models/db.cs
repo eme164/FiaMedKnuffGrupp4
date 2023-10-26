@@ -16,7 +16,7 @@ public static class DataAccess
         // Create or open the SQLite database file in the local folder
         await ApplicationData.Current.LocalFolder.CreateFileAsync("database.db", CreationCollisionOption.OpenIfExists);
         string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "database.db");
-        Debug.WriteLine("shit path: " + dbpath);
+        Debug.WriteLine("PATH: " + dbpath);
 
         // Open a connection to the SQLite database
         using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
