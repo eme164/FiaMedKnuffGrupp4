@@ -88,6 +88,7 @@ public static class DataAccess
         // Open a connection to the SQLite database
         using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
         {
+
             db.Open();
 
             // Create a SQL command to select the saved game state based on the provided name
@@ -100,6 +101,7 @@ public static class DataAccess
             // Check if a result was found
             if (result != null)
             {
+
                 // Convert the result to a string and store it as the game state JSON
                 gameStateJson = result.ToString();
             }
@@ -110,5 +112,35 @@ public static class DataAccess
 
         // Return the retrieved game state JSON string
         return gameStateJson;
+    }
+
+    /// <summary>
+    /// Deletes the game state data from the database with the specified name.
+    /// </summary>
+    /// <param name="name">The name associated with the game state data to delete.</param>
+    public static void DeleteGameState(string name)
+    {
+        // Get the path to the local database file
+        string dbpath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "database.db");
+
+        // Open a connection to the SQLite database
+        using (SqliteConnection db = new SqliteConnection($"Filename={dbpath}"))
+        {
+            db.Open();
+
+            // Create a SQL command to delete the game state by name
+            SqliteCommand deleteCommand = new SqliteCommand();
+            deleteCommand.Connection = db;
+
+            // Use parameterized queries to specify the name to delete
+            deleteCommand.CommandText = "DELETE FROM GameState WHERE Name = @name;";
+            deleteCommand.Parameters.AddWithValue("@name", name);
+
+            // Execute the SQL command to delete the game state
+            deleteCommand.ExecuteNonQuery();
+
+            // Close the database connection
+            db.Close();
+        }
     }
 }

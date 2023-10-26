@@ -1,31 +1,24 @@
-﻿using Microsoft.Graphics.Canvas.Text;
+﻿using FiaMedKnuffGrupp4.Models;
+using Microsoft.Graphics.Canvas;
+using Microsoft.Graphics.Canvas.Text;
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI.Core;
-using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Microsoft.Graphics.Canvas;
-using FiaMedKnuffGrupp4.Models;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.Media.Core;
 using Windows.Media.Playback;
-using Windows.UI.Xaml.Media.Imaging;
-using System.Diagnostics;
-using ColorCode.Common;
-using Windows.UI.Xaml.Shapes;
 using Windows.System;
+using Windows.UI;
+using Windows.UI.Core;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Navigation;
+using Windows.UI.Xaml.Shapes;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -50,7 +43,7 @@ namespace FiaMedKnuffGrupp4
         private int diceRollResult;
         private bool loadGame = false;
         CanvasDrawingSession drawingSession;
-       
+
         public enum ActiveTeam
         {
             Red,
@@ -125,7 +118,7 @@ namespace FiaMedKnuffGrupp4
         {
             this.InitializeComponent();
             //InitializeGame();
-            
+
             Debug.WriteLine("Current active team: " + currentActiveTeam);
 
             PlayBackgroundMusic();
@@ -153,7 +146,7 @@ namespace FiaMedKnuffGrupp4
                 FontSize = fontSize
             };
 
-            
+
 
             // Loop through all cells and draw a black outline with coordinates inside each cell.
             if (drawGrid)
@@ -184,7 +177,7 @@ namespace FiaMedKnuffGrupp4
                     }
                 }
             }
-            
+
         }
 
         /// <summary>
@@ -194,7 +187,7 @@ namespace FiaMedKnuffGrupp4
         /// <param name="args"></param>
         private void canvas_Update(Microsoft.Graphics.Canvas.UI.Xaml.ICanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedUpdateEventArgs args)
         {
-            
+
             setCellSize();
             setCanvasMargin();
             setDiceImageSize();
@@ -219,7 +212,7 @@ namespace FiaMedKnuffGrupp4
         /// <param name="args"></param>
         private void canvas_CreateResources(Microsoft.Graphics.Canvas.UI.Xaml.CanvasAnimatedControl sender, Microsoft.Graphics.Canvas.UI.CanvasCreateResourcesEventArgs args)
         {
-            
+
         }
 
         /// <summary>
@@ -300,7 +293,7 @@ namespace FiaMedKnuffGrupp4
             {
                 selectedToken.MoveToken(selectedToken, diceRollResult, grid, AllTokens());
                 canvas.Invalidate();
-                if(AllTokensAtGoal())
+                if (AllTokensAtGoal())
                 {
                     Debug.WriteLine("All tokens at goal");
                 }
@@ -401,13 +394,13 @@ namespace FiaMedKnuffGrupp4
         /// </summary>
         private void SwitchToNextTeam()
         {
-            if(diceRollResult != 6)
+            if (diceRollResult != 6)
             {
                 switch (currentActiveTeam)
                 {
                     case ActiveTeam.Red:
                         currentActiveTeam = ActiveTeam.Green;
-                        if(teamGreen.AI)
+                        if (teamGreen.AI)
                         {
                             CpuPlayerRollDice();
                         }
@@ -435,7 +428,7 @@ namespace FiaMedKnuffGrupp4
                         break;
                 }
             }
-                UpdateTurnIndicator();
+            UpdateTurnIndicator();
         }
 
         /// <summary>
@@ -475,7 +468,7 @@ namespace FiaMedKnuffGrupp4
             Debug.WriteLine("Dice roll result: " + diceRollResult);
             DiceImage.Source = new BitmapImage(new Uri("ms-appx:///Assets/dice_" + diceRollResult + ".png"));
             DisableDiceClick();
-            if(!IsValidRoll())
+            if (!IsValidRoll())
             {
                 diceRollResult = 0;
                 SwitchToNextTeam();
@@ -488,17 +481,17 @@ namespace FiaMedKnuffGrupp4
                 {
                     // If a six was rolled, notify the player with your new method.
                     NotifyPlayerForSix();
-                    if(GetCurrentTeam().AI)
+                    if (GetCurrentTeam().AI)
                     {
                         CpuPlayerPickToken();
                         CpuPlayerRollDice();
                     }
-                    
-                    
+
+
                 }
                 else
                 {
-                    if(GetCurrentTeam().AI)
+                    if (GetCurrentTeam().AI)
                     {
                         CpuPlayerPickToken();
                     }
@@ -516,7 +509,7 @@ namespace FiaMedKnuffGrupp4
             {
 
                 // Play the sound for rolling a six
-                mediaPlayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/noftication_roll6.mp3")); 
+                mediaPlayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/noftication_roll6.mp3"));
                 mediaPlayer.Play();
 
                 // Notify the player with a dialog (or another UI element)
@@ -570,7 +563,7 @@ namespace FiaMedKnuffGrupp4
         /// <returns>True if all tokens of the current team is at goal, otherwise returns False</returns>
         private bool AllTokensAtGoal()
         {
-            foreach(Token token in GetCurrentTeam().TeamTokens)
+            foreach (Token token in GetCurrentTeam().TeamTokens)
             {
                 if (!token.isInsideGoal)
                 {
@@ -657,11 +650,11 @@ namespace FiaMedKnuffGrupp4
 
             if (result == ContentDialogResult.Primary)
             {
-                ResetGameState(); 
+                ResetGameState();
             }
             else
             {
-                ReturnToMainMenu(); 
+                ReturnToMainMenu();
             }
         }
 
@@ -683,7 +676,7 @@ namespace FiaMedKnuffGrupp4
         {
             await Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                for(int i = 0; i < 4; i++)
+                for (int i = 0; i < 4; i++)
                 {
                     if (teamRed.TeamTokens[i].isInsideGoal)
                     {
@@ -718,7 +711,7 @@ namespace FiaMedKnuffGrupp4
             {
                 int minFontSize = 12;
                 mainStackPanel.Width = backgroundImage.ActualWidth;
-                StartButton.Width = cellSize * 2;  
+                StartButton.Width = cellSize * 2;
 
                 if (StartButton.Content is TextBlock buttonContent)
                 {
@@ -750,7 +743,7 @@ namespace FiaMedKnuffGrupp4
         private void ResetGameState()
         {
             // Reset the position of all tokens to their original positions
-            foreach(Token token in AllTokens())
+            foreach (Token token in AllTokens())
             {
                 token.resetToken();
             }
@@ -815,7 +808,7 @@ namespace FiaMedKnuffGrupp4
         {
             rulesPopup.IsOpen = true;
 
-         
+
 
             /*Popup rulesPopup = new Popup();
  
@@ -875,17 +868,17 @@ namespace FiaMedKnuffGrupp4
         {
             await Task.Delay(2000);
             Debug.WriteLine("CPU turn");
-            RollDiceButton_Click(this,null);
+            RollDiceButton_Click(this, null);
         }
 
         /// <summary>
         /// This method is used to simulate a CPU player picking a token and moving it.
         /// </summary>
         /// TODO: Check so that you can't walk into goal unless you rolled the exact amount of steps needed to reach goal.
-        private async void CpuPlayerPickToken() 
-        {   
+        private async void CpuPlayerPickToken()
+        {
             await Task.Delay(2000);
-            if(diceRollResult == 6)
+            if (diceRollResult == 6)
             {
                 selectedToken = GetCurrentTeam().TeamTokens[new Random().Next(0, 4)];
             }
@@ -921,7 +914,7 @@ namespace FiaMedKnuffGrupp4
                 teamRed.AI = userSelections["Red"] == "Ai";
                 teamYellow.AI = userSelections["Yellow"] == "Ai";
                 teamBlue.AI = userSelections["Blue"] == "Ai";
-                
+
                 Debug.WriteLine("Green: " + teamGreen.AI);
                 Debug.WriteLine("Red: " + teamRed.AI);
                 Debug.WriteLine("Yellow: " + teamYellow.AI);
@@ -934,7 +927,7 @@ namespace FiaMedKnuffGrupp4
                 //Debug.WriteLine("Current active team: " + currentActiveTeam);
             }
 
-            if(e.Parameter is bool loadGameState)
+            if (e.Parameter is bool loadGameState)
             {
                 loadGame = loadGameState;
             }
@@ -977,7 +970,7 @@ namespace FiaMedKnuffGrupp4
 
             StopBackgroundMusic();
 
-            foreach(Team team in teams.TeamList)
+            foreach (Team team in teams.TeamList)
             {
                 team.AI = false;
             }
@@ -993,23 +986,24 @@ namespace FiaMedKnuffGrupp4
         }
 
         /// <summary>
-        /// Saves the current game state to the database with the name "continue" and overwrites any existing data.
+        /// Saves the current game state to the database with the name "continue" and overwrites any existing data
+        /// with the same name.
         /// </summary>
         private void SaveGameState()
         {
             // Create a list of teams to save
             List<Team> teamsToSave = new List<Team> { teamRed, teamGreen, teamYellow, teamBlue };
 
-            // Create a new GameState object with current game data
-            var gameState = new Models.GameState(teamsToSave, currentActiveTeam, "continue");
-
             // Serialize the game state to a JSON string
+            var gameState = new Models.GameState(teamsToSave, currentActiveTeam, "continue");
             string serializedState = gameState.SerializeGameState();
 
-            // Save the serialized state to the database with the name "continue" (overwriting existing data)
+            // Delete the existing GameState data named 'continue' (if it exists) to ensure overwrite
+            DataAccess.DeleteGameState("continue");
+
+            // Save the serialized state to the database with the name "continue"
             DataAccess.SetGameState("continue", serializedState);
         }
-
 
         /// <summary>
         /// Set the game state to the saved state with the name "continue."

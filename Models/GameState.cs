@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Newtonsoft.Json;
 
 namespace FiaMedKnuffGrupp4.Models
@@ -24,7 +25,9 @@ namespace FiaMedKnuffGrupp4.Models
         public string SerializeGameState()
         {
             // Use the Newtonsoft.Json library to serialize the current GameState instance to JSON
-            return JsonConvert.SerializeObject(this);
+            string serializedobject = JsonConvert.SerializeObject(this);
+            Debug.WriteLine("shit path: " + serializedobject);
+            return serializedobject;
         }
 
         /// <summary>
