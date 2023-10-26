@@ -42,6 +42,7 @@ namespace FiaMedKnuffGrupp4
         public Token selectedToken;
         private int diceRollResult;
         private bool loadGame = false;
+        private string loadGameName = "continue";
         CanvasDrawingSession drawingSession;
 
         public enum ActiveTeam
@@ -62,46 +63,46 @@ namespace FiaMedKnuffGrupp4
         private void InitializeGame()
         {
             //Original placement of tokens
-            //teamRed.AddToken(new Token("Red1", 10, 1, Colors.Red));
-            //teamRed.AddToken(new Token("Red2", 13, 1, Colors.Red));
-            //teamRed.AddToken(new Token("Red3", 10, 4, Colors.Red));
-            //teamRed.AddToken(new Token("Red4", 13, 4, Colors.Red));
+            teamRed.AddToken(new Token("Red1", 10, 1, Colors.Red));
+            teamRed.AddToken(new Token("Red2", 13, 1, Colors.Red));
+            teamRed.AddToken(new Token("Red3", 10, 4, Colors.Red));
+            teamRed.AddToken(new Token("Red4", 13, 4, Colors.Red));
 
-            //Only for testing purposes to get tokens to goal faster
-            teamRed.AddToken(new Token("Red1", 10, 6, Colors.Red));
-            teamRed.AddToken(new Token("Red2", 9, 6, Colors.Red));
-            teamRed.AddToken(new Token("Red3", 11, 6, Colors.Red));
-            teamRed.AddToken(new Token("Red4", 12, 6, Colors.Red));
+            teamGreen.AddToken(new Token("Green1", 1, 1, Colors.Green));
+            teamGreen.AddToken(new Token("Green2", 1, 4, Colors.Green));
+            teamGreen.AddToken(new Token("Green3", 4, 1, Colors.Green));
+            teamGreen.AddToken(new Token("Green4", 4, 4, Colors.Green));
 
-            teamGreen.AddToken(new Token("Green1", 13, 6, Colors.Green));
-            teamGreen.AddToken(new Token("Green2", 14, 6, Colors.Green));
-            teamGreen.AddToken(new Token("Green3", 14, 7, Colors.Green));
-            teamGreen.AddToken(new Token("Green4", 14, 8, Colors.Green));
+            teamYellow.AddToken(new Token("Yellow1", 1, 10, Colors.Yellow));
+            teamYellow.AddToken(new Token("Yellow2", 4, 10, Colors.Yellow));
+            teamYellow.AddToken(new Token("Yellow3", 1, 13, Colors.Yellow));
+            teamYellow.AddToken(new Token("Yellow4", 4, 13, Colors.Yellow));
 
-            //teamGreen.AddToken(new Token("Green1", 9, 1, Colors.Green));
-            //teamGreen.AddToken(new Token("Green2", 1, 4, Colors.Green));
-            //teamGreen.AddToken(new Token("Green3", 4, 1, Colors.Green));
-            //teamGreen.AddToken(new Token("Green4", 4, 4, Colors.Green));
-
-            teamYellow.AddToken(new Token("Yellow1", 8, 5, Colors.Yellow));
-            teamYellow.AddToken(new Token("Yellow2", 8, 4, Colors.Yellow));
-            teamYellow.AddToken(new Token("Yellow3", 8, 3, Colors.Yellow));
-            teamYellow.AddToken(new Token("Yellow4", 8, 2, Colors.Yellow));
-
-            //teamYellow.AddToken(new Token("Yellow1", 1, 10, Colors.Yellow));
-            //teamYellow.AddToken(new Token("Yellow2", 4, 10, Colors.Yellow));
-            //teamYellow.AddToken(new Token("Yellow3", 1, 13, Colors.Yellow));
-            //teamYellow.AddToken(new Token("Yellow4", 4, 13, Colors.Yellow));
-
-            //teamBlue.AddToken(new Token("Blue1", 10, 10, Colors.Blue));
-            //teamBlue.AddToken(new Token("Blue2", 10, 13, Colors.Blue));
-            //teamBlue.AddToken(new Token("Blue3", 13, 10, Colors.Blue));
-            //teamBlue.AddToken(new Token("Blue4", 13, 13, Colors.Blue));
-
-            teamBlue.AddToken(new Token("Blue1", 13, 8, Colors.Blue));
+            teamBlue.AddToken(new Token("Blue1", 10, 10, Colors.Blue));
             teamBlue.AddToken(new Token("Blue2", 10, 13, Colors.Blue));
             teamBlue.AddToken(new Token("Blue3", 13, 10, Colors.Blue));
             teamBlue.AddToken(new Token("Blue4", 13, 13, Colors.Blue));
+
+            //Only for testing purposes to get tokens to goal faster
+            //teamRed.AddToken(new Token("Red1", 10, 6, Colors.Red));
+            //teamRed.AddToken(new Token("Red2", 9, 6, Colors.Red));
+            //teamRed.AddToken(new Token("Red3", 11, 6, Colors.Red));
+            //teamRed.AddToken(new Token("Red4", 12, 6, Colors.Red));
+
+            //teamGreen.AddToken(new Token("Green1", 13, 6, Colors.Green));
+            //teamGreen.AddToken(new Token("Green2", 14, 6, Colors.Green));
+            //teamGreen.AddToken(new Token("Green3", 14, 7, Colors.Green));
+            //teamGreen.AddToken(new Token("Green4", 14, 8, Colors.Green));
+
+            //teamYellow.AddToken(new Token("Yellow1", 8, 5, Colors.Yellow));
+            //teamYellow.AddToken(new Token("Yellow2", 8, 4, Colors.Yellow));
+            //teamYellow.AddToken(new Token("Yellow3", 8, 3, Colors.Yellow));
+            //teamYellow.AddToken(new Token("Yellow4", 8, 2, Colors.Yellow));
+
+            //teamBlue.AddToken(new Token("Blue1", 13, 8, Colors.Blue));
+            //teamBlue.AddToken(new Token("Blue2", 10, 13, Colors.Blue));
+            //teamBlue.AddToken(new Token("Blue3", 13, 10, Colors.Blue));
+            //teamBlue.AddToken(new Token("Blue4", 13, 13, Colors.Blue));
 
             if (loadGame)
             {
@@ -947,6 +948,12 @@ namespace FiaMedKnuffGrupp4
                 loadGame = loadGameState;
             }
 
+            if(e.Parameter is string loadGameNameFromDemo)
+            {
+                loadGameName = loadGameNameFromDemo;
+                loadGame = true;
+            }
+
             InitializeGame();
             UpdateTurnIndicator();
 
@@ -1010,14 +1017,14 @@ namespace FiaMedKnuffGrupp4
             List<Team> teamsToSave = new List<Team> { teamRed, teamGreen, teamYellow, teamBlue };
 
             // Serialize the game state to a JSON string
-            var gameState = new Models.GameState(teamsToSave, currentActiveTeam, "demo1");
+            var gameState = new Models.GameState(teamsToSave, currentActiveTeam, "continue");
             string serializedState = gameState.SerializeGameState();
 
             // Delete the existing GameState data named 'continue' (if it exists) to ensure overwrite
-            DataAccess.DeleteGameState("demo1");
+            DataAccess.DeleteGameState("continue");
 
             // Save the serialized state to the database with the name "continue"
-            DataAccess.SetGameState("demo1", serializedState);
+            DataAccess.SetGameState("continue", serializedState);
         }
 
         /// <summary>
@@ -1026,13 +1033,13 @@ namespace FiaMedKnuffGrupp4
         private void LoadGameState()
         {
             // Get the serialized game state with the name "continue" from the database
-            string serializedState = DataAccess.GetGameState("demo1");
+            string serializedState = DataAccess.GetGameState(loadGameName);
 
             if (string.IsNullOrEmpty(serializedState))
                 return; // No saved state available
 
             // Create a new empty GameState object
-            var gameState = new Models.GameState(null, ActiveTeam.Red, "demo1");
+            var gameState = new Models.GameState(null, ActiveTeam.Red, loadGameName);
 
             // Deserialize the saved state into the gameState object
             gameState.DeserializeGameState(serializedState);

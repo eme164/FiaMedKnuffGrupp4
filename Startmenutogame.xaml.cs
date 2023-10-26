@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Security.Cryptography.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -66,6 +67,11 @@ namespace FiaMedKnuffGrupp4
              
             return selections;
         }
+        private string LoadString()
+        {
+            string loadString = "demo1";
+            return loadString;
+        }
 
         private void TestButton_Click(object sender, RoutedEventArgs e)
         {
@@ -75,7 +81,8 @@ namespace FiaMedKnuffGrupp4
 
             if (clickedButton.Name == "TestButton1")
             {
-                // Code for Test Button 1
+                var loadString = LoadString();
+                Frame.Navigate(typeof(GameBoard), loadString);
             }
             else if (clickedButton.Name == "TestButton2")
             {
@@ -89,6 +96,9 @@ namespace FiaMedKnuffGrupp4
             {
                 // Code for Test Button 2
             }
+
         }
+
+        
     }
 }
