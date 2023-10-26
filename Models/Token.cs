@@ -31,7 +31,7 @@ namespace FiaMedKnuffGrupp4.Models
         public float Scale { get; set; } = 1.0f;
         public int StartPositionRow;
         public int StartPositionCol;
-        public bool isInsideGoal { get; private set; }
+        public bool isInsideGoal { get; set; }
 
         /// <summary>
         /// Constructor for Token

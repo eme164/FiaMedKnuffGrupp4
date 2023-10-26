@@ -84,25 +84,25 @@ namespace FiaMedKnuffGrupp4
             teamBlue.AddToken(new Token("Blue4", 13, 13, Colors.Blue));
 
             //Only for testing purposes to get tokens to goal faster
-            //teamRed.AddToken(new Token("Red1", 10, 6, Colors.Red));
-            //teamRed.AddToken(new Token("Red2", 9, 6, Colors.Red));
-            //teamRed.AddToken(new Token("Red3", 11, 6, Colors.Red));
-            //teamRed.AddToken(new Token("Red4", 12, 6, Colors.Red));
+            //teamRed.AddToken(new Token("Red1", 9, 7, Colors.Red));
+            //teamRed.AddToken(new Token("Red2", 10, 7, Colors.Red));
+            //teamRed.AddToken(new Token("Red3", 11, 7, Colors.Red));
+            //teamRed.AddToken(new Token("Red4", 12, 7, Colors.Red));
 
             //teamGreen.AddToken(new Token("Green1", 13, 6, Colors.Green));
-            //teamGreen.AddToken(new Token("Green2", 14, 6, Colors.Green));
-            //teamGreen.AddToken(new Token("Green3", 14, 7, Colors.Green));
-            //teamGreen.AddToken(new Token("Green4", 14, 8, Colors.Green));
+            //teamGreen.AddToken(new Token("Green2", 13, 6, Colors.Green));
+            //teamGreen.AddToken(new Token("Green3", 14, 6, Colors.Green));
+            //teamGreen.AddToken(new Token("Green4", 14, 6, Colors.Green));
 
-            //teamYellow.AddToken(new Token("Yellow1", 8, 5, Colors.Yellow));
+            //teamYellow.AddToken(new Token("Yellow1", 8, 4, Colors.Yellow));
             //teamYellow.AddToken(new Token("Yellow2", 8, 4, Colors.Yellow));
-            //teamYellow.AddToken(new Token("Yellow3", 8, 3, Colors.Yellow));
+            //teamYellow.AddToken(new Token("Yellow3", 8, 2, Colors.Yellow));
             //teamYellow.AddToken(new Token("Yellow4", 8, 2, Colors.Yellow));
 
-            //teamBlue.AddToken(new Token("Blue1", 13, 8, Colors.Blue));
-            //teamBlue.AddToken(new Token("Blue2", 10, 13, Colors.Blue));
-            //teamBlue.AddToken(new Token("Blue3", 13, 10, Colors.Blue));
-            //teamBlue.AddToken(new Token("Blue4", 13, 13, Colors.Blue));
+            //teamBlue.AddToken(new Token("Blue1", 14, 7, Colors.Blue));
+            //teamBlue.AddToken(new Token("Blue2", 14, 8, Colors.Blue));
+            //teamBlue.AddToken(new Token("Blue3", 8, 1, Colors.Blue));
+            //teamBlue.AddToken(new Token("Blue4", 8, 1, Colors.Blue));
 
             if (loadGame)
             {
@@ -761,7 +761,17 @@ namespace FiaMedKnuffGrupp4
             // Reset the position of all tokens to their original positions
             foreach (Token token in AllTokens())
             {
+                token.isInsideGoal = false;
                 token.resetToken();
+            }
+
+            //reset opacity of tokens in goal
+            foreach (var stackPanel in new[] { redTokensGoal, greenTokensGoal, yellowTokensGoal, blueTokensGoal })
+            {
+                foreach (Ellipse ellipse in stackPanel.Children)
+                {
+                    ellipse.Opacity = 0.5;
+                }
             }
 
             menuPopup.IsOpen = false;
@@ -858,7 +868,7 @@ namespace FiaMedKnuffGrupp4
         }
         private void QuitButton_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Exit();
+            Frame.Navigate(typeof(MainPage));
         }
 
         //This does not work for some reason....

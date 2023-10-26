@@ -208,41 +208,28 @@
             Margin="10,10,0,0"
             VerticalAlignment="Top"
             Background="LightGray"
-            Click="TestButton_Click">
-            <TextBlock TextAlignment="Center" TextWrapping="Wrap">
-                Demo 1 Back to base
-            </TextBlock>
-        </Button>
+            Click="TestButton_Click"
+            Content="    Demo 1 &#xa;Back to Base" />
 
         <Button
             x:Name="TestButton2"
             Width="100"
-            Height="50"
+            Height="68"
             Margin="10,70,0,0"
             VerticalAlignment="Top"
             Background="LightGray"
             Click="TestButton_Click"
-            Content="Test 2" />
+            Content="Demo 2 &#xa;You Shall&#xa;Not Pass" />
 
         <Button
             x:Name="TestButton3"
             Width="100"
             Height="50"
-            Margin="10,130,0,0"
+            Margin="10,150,0,0"
             VerticalAlignment="Top"
             Background="LightGray"
             Click="TestButton_Click"
-            Content="Test 3" />
-
-        <Button
-            x:Name="TestButton4"
-            Width="100"
-            Height="50"
-            Margin="10,190,0,0"
-            VerticalAlignment="Top"
-            Background="LightGray"
-            Click="TestButton_Click"
-            Content="Test 4" />
+            Content="Demo 3&#xa;Victory!!!" />
 
     </Grid>
 </Page>

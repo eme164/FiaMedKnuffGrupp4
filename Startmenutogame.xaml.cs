@@ -67,9 +67,27 @@ namespace FiaMedKnuffGrupp4
              
             return selections;
         }
-        private string LoadString()
+        private string LoadString(Button clickedButton)
         {
-            string loadString = "demo1";
+            string loadString = "continue";
+            switch (clickedButton.Name)
+            {
+                case "TestButton1":
+                    loadString = "demo1";
+                    break;
+                case "TestButton2":
+                    loadString = "demo2";
+                    break;
+                case "TestButton3":
+                loadString = "demo3";
+                    break;
+                case "TestButton4":
+                    loadString = "demo4";
+                    break;
+                default:
+                    loadString = "continue";
+                    break;
+            }
             return loadString;
         }
 
@@ -81,20 +99,23 @@ namespace FiaMedKnuffGrupp4
 
             if (clickedButton.Name == "TestButton1")
             {
-                var loadString = LoadString();
+                var loadString = LoadString(clickedButton);
                 Frame.Navigate(typeof(GameBoard), loadString);
             }
             else if (clickedButton.Name == "TestButton2")
             {
-                // Code for Test Button 2
+                var loadString = LoadString(clickedButton);
+                Frame.Navigate(typeof(GameBoard), loadString);
             }
             else if (clickedButton.Name == "TestButton3")
             {
-                // Code for Test Button 2
+                var loadString = LoadString(clickedButton);
+                Frame.Navigate(typeof(GameBoard), loadString);
             }
             else if (clickedButton.Name == "TestButton4")
             {
-                // Code for Test Button 2
+                var loadString = LoadString(clickedButton);
+                Frame.Navigate(typeof(GameBoard), loadString);
             }
 
         }
