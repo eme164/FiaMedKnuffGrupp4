@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Windows.UI;
-using Windows.UI.Xaml.Controls;
 
 namespace FiaMedKnuffGrupp4.Models
 {
     /// <summary>
     /// Represents a team of tokens.
     /// </summary>
-    public class Team { 
+    public class Team
+    {
         public List<Token> TeamTokens { get; set; }
         public Color TeamColor { get; set; }
         public bool AI = false;

@@ -1,15 +1,9 @@
 ﻿using Microsoft.Graphics.Canvas;
-using Microsoft.Graphics.Canvas.Text;
-using Microsoft.Graphics.Canvas.UI.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.UI;
-using Windows.UI.Xaml.Controls;
 
 namespace FiaMedKnuffGrupp4.Models
 {   /// <summary>
@@ -128,7 +122,7 @@ namespace FiaMedKnuffGrupp4.Models
                         tempRow++;
                         break;
                     case 11:
-                        if(token.TokenColor == Colors.Green)
+                        if (token.TokenColor == Colors.Green)
                         {
                             tempCol++;
                             break;
@@ -136,10 +130,10 @@ namespace FiaMedKnuffGrupp4.Models
                         else
                         {
                             tempRow--;
-                        break;
+                            break;
                         }
                     case 12:
-                        if(token.TokenColor == Colors.Yellow)
+                        if (token.TokenColor == Colors.Yellow)
                         {
                             tempRow++;
                             break;
@@ -150,7 +144,7 @@ namespace FiaMedKnuffGrupp4.Models
                             break;
                         }
                     case 13:
-                        if(token.TokenColor == Colors.Blue)
+                        if (token.TokenColor == Colors.Blue)
                         {
                             tempCol--;
                             break;
@@ -161,7 +155,7 @@ namespace FiaMedKnuffGrupp4.Models
                             break;
                         }
                     case 14:
-                        if(token.TokenColor == Colors.Red)
+                        if (token.TokenColor == Colors.Red)
                         {
                             tempRow--;
                             break;
@@ -178,7 +172,7 @@ namespace FiaMedKnuffGrupp4.Models
                 }
 
                 tile = grid.GetTile(tempRow, tempCol);
-                if(tile == 15)
+                if (tile == 15)
                 {
                     isInsideGoal = true;
                     Debug.WriteLine("You have reached the goal!");
@@ -200,7 +194,7 @@ namespace FiaMedKnuffGrupp4.Models
                     CurrentPositionRow = tempRow;
                     CurrentPositionCol = tempCol;
                 }
-            
+
             }
 
 

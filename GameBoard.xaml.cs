@@ -893,7 +893,7 @@ namespace FiaMedKnuffGrupp4
                         tokensNotInBase.Add(token);
                     }
                 }
-                selectedToken = tokensNotInBase[new Random().Next(0, tokensNotInBase.Count)];
+                selectedToken = tokensNotInBase[new Random().Next(0, tokensNotInBase.Count)]; // Error here if no valid moves are available. is fine.. probably :D
             }
             selectedToken.MoveToken(selectedToken, diceRollResult, grid, AllTokens());
             SwitchToNextTeam();

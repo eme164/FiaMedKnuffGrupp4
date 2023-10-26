@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FiaMedKnuffGrupp4.Models
+﻿namespace FiaMedKnuffGrupp4.Models
 {
     /// <summary>
     /// Represents the game board grid that defines the maze layout.

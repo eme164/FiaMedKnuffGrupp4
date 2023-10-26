@@ -1,28 +1,15 @@
-﻿  using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+﻿using System;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace FiaMedKnuffGrupp4
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// Represents a page for simulating dice rolling animation and managing player turns.
     /// </summary>
     public sealed partial class DiceAnimation : Page
     {
@@ -35,18 +22,30 @@ namespace FiaMedKnuffGrupp4
             this.InitializeComponent();
         }
 
+        /// <summary>
+        /// Checks whether the current player's roll is valid.
+        /// </summary>
+        /// <returns>True if the roll is valid; otherwise, false.</returns>
         private bool IsValidRoll()
         {
-            // Game Turn Management | Ensure that the displayed dice result is updated only when it's the player's turn to roll the dice..
-            return true;  // Placeholder logic: always returns true.
+            // Placeholder logic: always returns true; you can implement custom logic here.
+            return true;
         }
 
+        /// <summary>
+        /// Advances to the next player's turn.
+        /// </summary>
         private void NextTurn()
         {
             currentPlayerIndex = (currentPlayerIndex + 1) % players.Length;
             PlayerTurnTextBlock.Text = $"{players[currentPlayerIndex]}'s Turn";
         }
 
+        /// <summary>
+        /// Handles the click event of the Roll Dice button.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">Event arguments.</param>
         private async void RollDiceButton_Click(object sender, RoutedEventArgs e)
         {
             if (IsValidRoll())
@@ -64,13 +63,20 @@ namespace FiaMedKnuffGrupp4
         }
 
         private MediaPlayer mediaPlayer = new MediaPlayer();
+
+        /// <summary>
+        /// Plays a sound when rolling the dice.
+        /// </summary>
         private void PlayDiceSound()
         {
             mediaPlayer.Source = MediaSource.CreateFromUri(new Uri("ms-appx:///Assets/dice_roll.mp3"));
             mediaPlayer.Play();
         }
 
-
+        /// <summary>
+        /// Simulates a rolling dice animation.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
         private async Task RollDiceAnimation()
         {
             string[] diceImages = { "dice_1.png", "dice_2.png", "dice_3.png", "dice_4.png", "dice_5.png", "dice_6.png" };

@@ -1,39 +1,15 @@
-﻿using Microsoft.Graphics.Canvas;
-using Microsoft.Graphics.Canvas.Text;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.UI;
-using Windows.UI.Core;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Hosting;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
-using Windows.UI.Composition;
-using Windows.UI.Xaml.Shapes;
+﻿using Windows.UI.Xaml;
 
 
 namespace FiaMedKnuffGrupp4
 {
     public sealed partial class MainPage
     {
-        
+
         public MainPage()
         {
             this.InitializeComponent();
-           
+
         }
 
 
@@ -43,7 +19,7 @@ namespace FiaMedKnuffGrupp4
             this.Frame.Navigate(typeof(Startmenutogame));
         }
 
-       
+
 
         private void Button_Quit(object sender, RoutedEventArgs e)
         {

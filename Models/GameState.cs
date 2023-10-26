@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.Diagnostics;
-using Newtonsoft.Json;
 
 namespace FiaMedKnuffGrupp4.Models
 {
@@ -44,6 +44,5 @@ namespace FiaMedKnuffGrupp4.Models
             Teams = gameState.Teams;
             CurrentActiveTeam = gameState.CurrentActiveTeam;
         }
-
     }
 }
