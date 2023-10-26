@@ -1037,7 +1037,7 @@ namespace FiaMedKnuffGrupp4
         }
 
 
-        private async void UpdateTurnIndicator()
+        private void UpdateTurnIndicator()
         {
             var currentTeam = currentActiveTeam;
             turnIndicatorTextBlock.Text = $"Turn: Team {currentTeam}";

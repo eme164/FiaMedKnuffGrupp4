@@ -67,5 +67,28 @@ namespace FiaMedKnuffGrupp4
             return selections;
         }
 
+        private void TestButton_Click(object sender, RoutedEventArgs e)
+        {
+            // This method will be executed when any of the Test buttons is clicked.
+            // You can add your code here based on which button was clicked.
+            Button clickedButton = (Button)sender;
+
+            if (clickedButton.Name == "TestButton1")
+            {
+                // Code for Test Button 1
+            }
+            else if (clickedButton.Name == "TestButton2")
+            {
+                // Code for Test Button 2
+            }
+            else if (clickedButton.Name == "TestButton3")
+            {
+                // Code for Test Button 2
+            }
+            else if (clickedButton.Name == "TestButton4")
+            {
+                // Code for Test Button 2
+            }
+        }
     }
 }

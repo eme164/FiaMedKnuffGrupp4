@@ -183,6 +183,37 @@
                 <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Continue</TextBlock>
             </Button.Content>
         </Button>
+        <Button x:Name="TestButton1" 
+        VerticalAlignment="Top" 
+        Height="50" Width="100" 
+        Background="LightGray" 
+        Content="Test 1"
+        Margin="10,10,0,0"
+        Click="TestButton_Click"/>
+
+        <Button x:Name="TestButton2" 
+        VerticalAlignment="Top" 
+        Height="50" Width="100" 
+        Background="LightGray" 
+        Content="Test 2"
+        Margin="10,70,0,0"
+        Click="TestButton_Click"/>
+
+        <Button x:Name="TestButton3" 
+        VerticalAlignment="Top" 
+        Height="50" Width="100" 
+        Background="LightGray" 
+        Content="Test 3"
+        Margin="10,130,0,0"
+        Click="TestButton_Click"/>
+
+        <Button x:Name="TestButton4" 
+        VerticalAlignment="Top" 
+        Height="50" Width="100" 
+        Background="LightGray" 
+        Content="Test 4"
+        Margin="10,190,0,0"
+        Click="TestButton_Click"/>
 
     </Grid>
 </Page>
