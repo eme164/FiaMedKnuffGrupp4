@@ -137,7 +137,7 @@ namespace FiaMedKnuffGrupp4
 
             Debug.WriteLine("Current active team: " + currentActiveTeam);
 
-            PlayBackgroundMusic();
+            //PlayBackgroundMusic();
         }
 
         //Return user type from startmenutogame.xaml

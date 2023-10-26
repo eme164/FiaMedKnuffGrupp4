@@ -21,7 +21,7 @@
 
         <Image
             x:Name="backgroundImage"
-            Source="/Assets/Images/Gameboard/Board.png"
+            Source="/Assets/Images/Gameboard/Board2.png"
             Stretch="Uniform" />
 
         <Canvas:CanvasAnimatedControl
